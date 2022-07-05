@@ -14,11 +14,6 @@ class TextWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        color: Colors.red,
-      ),
-    );
+    return Text(text);
   }
 }
