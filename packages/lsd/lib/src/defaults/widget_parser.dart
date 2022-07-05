@@ -15,11 +15,11 @@ class DefaultLsdWidgetParser implements LsdWidgetParser {
   @override
   LsdWidget fromJson(Map<String, dynamic> element) {
     if (!element.containsKey("type")) {
-      throw LsdMissingElementTypeError();
+      throw LsdMissingElementTypeError("Missing widget ${element["type"]}");
     }
 
     if (!_widgetsShelf.containsType(element["type"])) {
-      throw LsdUnknownElementError();
+      throw LsdUnknownElementError("Unknown widget ${element["type"]}");
     }
 
     return _widgetsShelf

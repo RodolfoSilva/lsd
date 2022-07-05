@@ -10,7 +10,7 @@ class ScreenWidget extends LsdWidget {
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
     title = props["title"];
-    body = props["body"] != null ? lsd.parse(props["body"]!) : null;
+    body = props["body"] != null ? lsd.parseWidget(props["body"]!) : null;
 
     return super.fromJson(props);
   }

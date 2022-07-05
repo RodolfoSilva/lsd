@@ -1,1 +1,3 @@
-class LsdError implements Exception {}
+class LsdError implements Exception {
+  String? message;
+}

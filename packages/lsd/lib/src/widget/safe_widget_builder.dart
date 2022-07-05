@@ -18,7 +18,7 @@ class LsdSafeWidgetBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
-      return _lsd.parse(_element).build(context);
+      return _lsd.parseWidget(_element).build(context);
     } on LsdError catch (e) {
       debugPrint(e.toString());
       return _lsd.renderError(context, e);

@@ -1,21 +1,29 @@
 import 'package:flutter/widgets.dart';
 
+import 'action/action.dart';
 import 'widget/widget.dart';
 
 class Lsd {
   Lsd({
-    required this.parser,
+    required this.widgetParser,
+    required this.actionParser,
     required this.buildLoadingWidget,
     required this.buildErrorWidget,
   }) {
-    parser.lsd = this;
+    widgetParser.lsd = this;
+    actionParser.lsd = this;
   }
 
-  final LsdWidgetParser parser;
+  final LsdWidgetParser widgetParser;
+  final LsdActionParser actionParser;
   final Widget Function() buildLoadingWidget;
   final Widget Function() buildErrorWidget;
 
-  LsdWidget parse(Map<String, dynamic> element) => parser.fromJson(element);
+  LsdWidget parseWidget(Map<String, dynamic> element) =>
+      widgetParser.fromJson(element);
+
+  LsdAction parseAction(Map<String, dynamic> element) =>
+      actionParser.fromJson(element);
 
   Widget renderLoading(BuildContext context) => buildLoadingWidget();
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
+import 'actions/navigate.dart';
+import 'components/button_widget.dart';
 import 'components/column_widget.dart';
 import 'components/screen_widget.dart';
 import 'components/text_widget.dart';
@@ -38,11 +40,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final lsd = Lsd(
-    parser: DefaultLsdWidgetParser(
+    widgetParser: DefaultLsdWidgetParser(
       widgetsShelf: LsdWidgetsShelf()
         ..register("Column", ColumnWidget.new)
+        ..register("Button", ButtonWidget.new)
         ..register("Screen", ScreenWidget.new)
         ..register("Text", TextWidget.new),
+    ),
+    actionParser: DefaultLsdActionParser(
+      actionsShelf: LsdActionsShelf()..register("Navigate", NavigateAction.new),
+      // ..register("Button", ButtonWidget.new)
+      // ..register("Screen", ScreenWidget.new)
+      // ..register("Text", TextWidget.new),
     ),
     buildLoadingWidget: () => const LoadingWidget(),
     buildErrorWidget: () => Scaffold(

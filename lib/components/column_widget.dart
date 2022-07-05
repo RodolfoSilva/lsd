@@ -11,7 +11,7 @@ class ColumnWidget extends LsdWidget {
   LsdWidget fromJson(Map<String, dynamic> props) {
     fullWidth = props["fullWidth"] == true;
     children = List<Map<String, dynamic>>.from(props["children"])
-        .map((element) => lsd.parse(element))
+        .map((element) => lsd.parseWidget(element))
         .toList();
 
     return super.fromJson(props);
