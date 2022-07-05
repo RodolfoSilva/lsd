@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
@@ -6,13 +8,18 @@ class NavigateAction extends LsdAction {
 
   late bool reset;
   late bool replace;
+  late String? result;
   late dynamic destination;
+  late LsdAction? after;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
     final destination = props["destination"];
     replace = props["replace"] == true;
     reset = props["reset"] == true;
+
+    after = props["after"] != null ? lsd.parseAction(props["after"]) : null;
+    result = props["result"];
 
     if (destination is Map) {
       final screen = Map<String, dynamic>.from(destination);
@@ -24,43 +31,59 @@ class NavigateAction extends LsdAction {
     return super.fromJson(props);
   }
 
+  _performLater(BuildContext context, [Map<String, dynamic>? params]) {
+    Future.microtask(() => after?.perform(context, params));
+  }
+
   @override
-  Map<String, dynamic>? perform(
-      BuildContext context, Map<String, dynamic>? result) {
+  Future<Map<String, dynamic>?> perform(
+    BuildContext context,
+    Map<String, dynamic>? initialResult,
+  ) async {
     if (destination == null) {
       return null;
     }
 
     if (destination is String) {
-      Navigator.pop(context);
+      Navigator.pop(context, this.result);
+      _performLater(context, {"result": this.result});
+      return null;
     }
 
+    int executionCount = 0;
+    final pageRoute = MaterialPageRoute(
+      builder: (context) {
+        executionCount++ == 0
+            ? _performLater(context, {"result": initialResult})
+            : null;
+        return (destination as LsdWidget).build(context);
+      },
+    );
+
     if (reset) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => (destination as LsdWidget).build(context),
-          ),
-          (Route<dynamic> route) => false);
-      return null;
+      final result = await Navigator.pushAndRemoveUntil(
+        context,
+        pageRoute,
+        (Route<dynamic> route) => false,
+      );
+      debugPrint(jsonEncode({"result": result}));
+      return {"result": result};
     }
 
     if (replace) {
-      Navigator.pushReplacement(
+      final result = await Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => (destination as LsdWidget).build(context),
-        ),
+        pageRoute,
       );
-      return null;
+      debugPrint(jsonEncode({"result": result}));
+      return {"result": result};
     }
 
-    Navigator.push(
+    final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => (destination as LsdWidget).build(context),
-      ),
+      pageRoute,
     );
-    return null;
+    debugPrint(jsonEncode({"result": result}));
+    return {"result": result};
   }
 }

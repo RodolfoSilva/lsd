@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
+import 'package:serview/actions/dialog.dart';
 
 import 'actions/navigate.dart';
 import 'components/button_widget.dart';
@@ -48,10 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ..register("Text", TextWidget.new),
     ),
     actionParser: DefaultLsdActionParser(
-      actionsShelf: LsdActionsShelf()..register("Navigate", NavigateAction.new),
-      // ..register("Button", ButtonWidget.new)
-      // ..register("Screen", ScreenWidget.new)
-      // ..register("Text", TextWidget.new),
+      actionsShelf: LsdActionsShelf()
+        ..register("Navigate", NavigateAction.new)
+        ..register("ShowDialog", ShowDialogAction.new),
     ),
     buildLoadingWidget: () => const LoadingWidget(),
     buildErrorWidget: () => Scaffold(

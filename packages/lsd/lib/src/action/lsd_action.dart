@@ -11,7 +11,7 @@ class LsdAction {
     return this;
   }
 
-  Map<String, dynamic>? perform(
+  Future<Map<String, dynamic>?> perform(
     BuildContext context,
     Map<String, dynamic>? initialResult,
   ) {
