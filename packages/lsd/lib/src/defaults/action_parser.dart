@@ -5,25 +5,31 @@ import '../lsd.dart';
 class DefaultLsdActionParser implements LsdActionParser {
   DefaultLsdActionParser({
     required LsdActionsShelf actionsShelf,
-  }) : _actionsShelf = actionsShelf;
+    String typeKey = "action",
+    String propsKey = "props",
+  })  : _actionsShelf = actionsShelf,
+        _typeKey = typeKey,
+        _propsKey = propsKey;
 
   @override
   late final Lsd lsd;
 
+  final String _typeKey;
+  final String _propsKey;
   final LsdActionsShelf _actionsShelf;
 
   @override
   LsdAction fromJson(Map<String, dynamic> element) {
-    if (!element.containsKey("type")) {
-      throw LsdMissingElementTypeError("Missing action ${element["type"]}");
+    if (!element.containsKey(_typeKey)) {
+      throw LsdMissingElementTypeError("Missing action ${element[_typeKey]}");
     }
 
-    if (!_actionsShelf.containsType(element["type"])) {
-      throw LsdUnknownElementError("Unknown action ${element["type"]}");
+    if (!_actionsShelf.containsType(element[_typeKey])) {
+      throw LsdUnknownElementError("Unknown action ${element[_typeKey]}");
     }
 
     return _actionsShelf
-        .create(element["type"], lsd)
-        .fromJson(element["props"]);
+        .create(element[_typeKey], lsd)
+        .fromJson(element[_propsKey]);
   }
 }

@@ -21,7 +21,9 @@ class ScreenWidget extends LsdWidget {
 
     return Scaffold(
       appBar: title,
-      body: body?.build(context),
+      body: body != null
+          ? Builder(builder: (context) => body!.build(context))
+          : null,
     );
   }
 }

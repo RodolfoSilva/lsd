@@ -19,13 +19,15 @@ class ColumnWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children =
-        this.children.map((element) => element.build(context)).toList();
+    return Builder(builder: (context) {
+      final children =
+          this.children.map((element) => element.build(context)).toList();
 
-    if (fullWidth) {
-      children.add(const SizedBox(width: double.infinity));
-    }
+      if (fullWidth) {
+        children.add(const SizedBox(width: double.infinity));
+      }
 
-    return Column(children: children);
+      return Column(children: children);
+    });
   }
 }
