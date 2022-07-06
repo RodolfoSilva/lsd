@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-import 'package:serview/actions/dialog.dart';
+import 'package:serview/actions/required_validation.dart';
+import 'package:serview/actions/submit_form.dart';
+import 'package:serview/components/container_widget.dart';
 
+import 'actions/dialog.dart';
 import 'actions/navigate.dart';
 import 'components/button_widget.dart';
 import 'components/column_widget.dart';
+import 'components/form_widget.dart';
+import 'components/input_widget.dart';
 import 'components/screen_widget.dart';
 import 'components/text_widget.dart';
 import 'loader.dart';
@@ -43,15 +48,20 @@ class _MyHomePageState extends State<MyHomePage> {
   final lsd = Lsd(
     widgetParser: DefaultLsdWidgetParser(
       widgetsShelf: LsdWidgetsShelf()
+        ..register("Container", ContainerWidget.new)
         ..register("Column", ColumnWidget.new)
         ..register("Button", ButtonWidget.new)
+        ..register("Form", FormWidget.new)
+        ..register("Input", InputWidget.new)
         ..register("Screen", ScreenWidget.new)
         ..register("Text", TextWidget.new),
     ),
     actionParser: DefaultLsdActionParser(
       actionsShelf: LsdActionsShelf()
         ..register("Navigate", NavigateAction.new)
-        ..register("ShowDialog", ShowDialogAction.new),
+        ..register("ShowDialog", ShowDialogAction.new)
+        ..register("RequiredValidation", RequiredValidationAction.new)
+        ..register("SubmitForm", SubmitFormAction.new),
     ),
     buildLoadingWidget: () => const LoadingWidget(),
     buildErrorWidget: () => Scaffold(
@@ -81,14 +91,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return FutureBuilder<Map<String, dynamic>>(
       future: load("/main"),
       builder: (context, data) {
-        if (data.connectionState == ConnectionState.done) {
-          return LsdSafeWidgetBuilder(
-            lsd: lsd,
-            element: data.data!,
-          );
+        if (data.connectionState != ConnectionState.done) {
+          return lsd.renderLoading(context);
         }
 
-        return lsd.renderLoading(context);
+        if (data.hasError) {
+          return lsd.renderError(context, data.error);
+        }
+        return LsdSafeWidgetBuilder(
+          lsd: lsd,
+          element: data.data!,
+        );
       },
     );
   }

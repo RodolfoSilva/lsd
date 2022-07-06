@@ -11,10 +11,7 @@ class LsdAction {
     return this;
   }
 
-  Future<Map<String, dynamic>?> perform(
-    BuildContext context,
-    Map<String, dynamic>? initialResult,
-  ) {
+  Future<dynamic> perform(BuildContext context, dynamic params) {
     throw UnimplementedError();
   }
 }

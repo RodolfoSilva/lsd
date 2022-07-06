@@ -36,10 +36,7 @@ class NavigateAction extends LsdAction {
   }
 
   @override
-  Future<Map<String, dynamic>?> perform(
-    BuildContext context,
-    Map<String, dynamic>? initialResult,
-  ) async {
+  Future<dynamic> perform(BuildContext context, dynamic params) async {
     if (destination == null) {
       return null;
     }
@@ -53,9 +50,7 @@ class NavigateAction extends LsdAction {
     int executionCount = 0;
     final pageRoute = MaterialPageRoute(
       builder: (context) {
-        executionCount++ == 0
-            ? _performLater(context, {"result": initialResult})
-            : null;
+        executionCount++ == 0 ? _performLater(context, params) : null;
         return (destination as LsdWidget).build(context);
       },
     );
