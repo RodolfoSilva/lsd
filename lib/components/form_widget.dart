@@ -14,10 +14,43 @@ class FormWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormDataWidget(
+    return _FormWidget(
       lsd: lsd,
+      child: child,
+    );
+  }
+}
+
+class _FormWidget extends StatefulWidget {
+  const _FormWidget({
+    Key? key,
+    required this.lsd,
+    required this.child,
+  }) : super(key: key);
+
+  final Lsd lsd;
+  final LsdWidget child;
+
+  @override
+  State<_FormWidget> createState() => _FormWidgetState();
+}
+
+class _FormWidgetState extends State<_FormWidget> {
+  late FormDataState _formDataState;
+  @override
+  void initState() {
+    super.initState();
+
+    _formDataState = FormDataState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FormDataWidget(
+      lsd: widget.lsd,
+      formState: _formDataState,
       child: Builder(
-        builder: (context) => child.build(context),
+        builder: (context) => widget.child.build(context),
       ),
     );
   }
@@ -62,24 +95,11 @@ class Validator {
   }
 }
 
-class FormDataWidget extends InheritedWidget {
-  FormDataWidget({
-    Key? key,
-    required Lsd lsd,
-    required Widget child,
-  }) : super(key: key, child: child);
-
-  @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    return true;
-  }
-
+class FormDataState {
   final List<String> fields = [];
   final Map<String, Validator> validations = {};
-  final Map<String, String?> _values = {};
-  final ValueNotifier<Map<String, String>> _errors = ValueNotifier({});
-
-  ValueNotifier<Map<String, String>> get errors => _errors;
+  final Map<String, String?> values = {};
+  final ValueNotifier<Map<String, String>> errors = ValueNotifier({});
 
   void register(String name, [List<LsdAction>? validations]) {
     if (!fields.contains(name)) {
@@ -96,21 +116,53 @@ class FormDataWidget extends InheritedWidget {
   }
 
   void setValue(String key, String? value) {
-    _values[key] = value;
+    values[key] = value;
+  }
+}
+
+class FormDataWidget extends InheritedWidget {
+  const FormDataWidget({
+    Key? key,
+    required Lsd lsd,
+    required FormDataState formState,
+    required Widget child,
+  })  : _state = formState,
+        super(key: key, child: child);
+
+  final FormDataState _state;
+
+  ValueNotifier<Map<String, String>> get errors => _state.errors;
+  Map<String, String?> get values => _state.values;
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return false;
+  }
+
+  void register(String name, [List<LsdAction>? validations]) {
+    _state.register(name, validations);
+  }
+
+  void unregister(String name) {
+    _state.unregister(name);
+  }
+
+  void setValue(String key, String? value) {
+    _state.setValue(key, value);
   }
 
   Future validate(BuildContext context) async {
-    _errors.value = {};
+    _state.errors.value = {};
     Map<String, String> errors = {};
-    await Future.wait(validations.entries.toList().map((entry) async {
+    await Future.wait(_state.validations.entries.toList().map((entry) async {
       final result =
-          await entry.value.validate(context, _values[entry.key] ?? "");
+          await entry.value.validate(context, _state.values[entry.key] ?? "");
       if (!result.isValid) {
         errors[entry.key] = result.error!;
       }
     }));
 
-    _errors.value = errors;
+    _state.errors.value = errors;
 
     return errors.isEmpty;
   }

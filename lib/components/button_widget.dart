@@ -24,14 +24,12 @@ class ButtonWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(builder: (context) {
-      final child = this.child.build(context);
+    final child = this.child.build(context);
 
-      if (variant == "text") {
-        return TextButton(onPressed: _onPressed(context), child: child);
-      }
+    if (variant == "text") {
+      return TextButton(onPressed: _onPressed(context), child: child);
+    }
 
-      return ElevatedButton(onPressed: _onPressed(context), child: child);
-    });
+    return ElevatedButton(onPressed: _onPressed(context), child: child);
   }
 }

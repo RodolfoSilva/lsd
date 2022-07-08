@@ -15,13 +15,14 @@ class SubmitFormAction extends LsdAction {
   Future<dynamic> perform(BuildContext context, dynamic params) async {
     final formData = FormDataWidget.of(context);
     final isValid = await formData.validate(context);
+    print(formData.values);
+    print(formData.errors);
 
     if (isValid) {
       debugPrint("Form is Valid");
       return true;
     } else {
       debugPrint("Form is Valid");
-      print(formData.errors);
       return false;
     }
   }

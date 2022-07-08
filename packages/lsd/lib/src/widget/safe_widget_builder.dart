@@ -2,8 +2,9 @@ import 'package:flutter/widgets.dart';
 
 import '../error/error.dart';
 import '../lsd.dart';
+import '../widget/widget.dart';
 
-class LsdSafeWidgetBuilder extends StatelessWidget {
+class LsdSafeWidgetBuilder extends StatefulWidget {
   const LsdSafeWidgetBuilder({
     Key? key,
     required Map<String, dynamic> element,
@@ -16,12 +17,51 @@ class LsdSafeWidgetBuilder extends StatelessWidget {
   final Lsd _lsd;
 
   @override
-  Widget build(BuildContext context) {
+  State<LsdSafeWidgetBuilder> createState() => _LsdSafeWidgetBuilderState();
+}
+
+class _LsdSafeWidgetBuilderState extends State<LsdSafeWidgetBuilder> {
+  late _ParseState _parseState;
+
+  @override
+  void initState() {
+    super.initState();
     try {
-      return _lsd.parseWidget(_element).build(context);
+      _parseState =
+          _ParseStateSuccess(widget._lsd.parseWidget(widget._element));
     } on LsdError catch (e) {
-      debugPrint(e.toString());
-      return _lsd.renderError(context, e);
+      _parseState = _ParseStateError(e);
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_parseState is _ParseStateSuccess) {
+      return (_parseState as _ParseStateSuccess).widget.build(context);
+    }
+
+    if (_parseState is _ParseStateError) {
+      return widget._lsd.renderError(
+        context,
+        (_parseState as _ParseStateError).error,
+      );
+    }
+
+    return widget._lsd.renderError(
+      context,
+      LsdBuildError("Unknown parse state"),
+    );
+  }
+}
+
+abstract class _ParseState {}
+
+class _ParseStateSuccess extends _ParseState {
+  _ParseStateSuccess(this.widget);
+  final LsdWidget widget;
+}
+
+class _ParseStateError extends _ParseState {
+  _ParseStateError(this.error);
+  final LsdError error;
 }
