@@ -17,14 +17,16 @@ class SendToServerAction extends LsdAction {
   }
 
   @override
-  Future<dynamic> perform(BuildContext context, dynamic params) async {
+  Future<dynamic> perform(
+    BuildContext Function() getContext,
+    dynamic params,
+  ) async {
     final result = await apiService.post(endpoint, params);
 
     if (result != null) {
-      // ignore: use_build_context_synchronously
       return lsd
           .parseAction(Map<String, dynamic>.from(result))
-          .perform(context, params);
+          .perform(getContext, params);
     }
     return result;
   }

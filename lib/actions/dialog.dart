@@ -23,13 +23,16 @@ class ShowDialogAction extends LsdAction {
   }
 
   @override
-  Future<dynamic> perform(BuildContext context, dynamic params) async {
+  Future<dynamic> perform(
+    BuildContext Function() getContext,
+    dynamic params,
+  ) async {
     final result = await showDialog<String?>(
-      context: context,
+      context: getContext(),
       builder: (BuildContext context) => AlertDialog(
-        title: title.build(context),
-        content: content.build(context),
-        actions: actions.map((e) => e.build(context)).toList(),
+        title: title.toWidth(context),
+        content: content.toWidth(context),
+        actions: actions.map((e) => e.toWidth(context)).toList(),
       ),
     );
 

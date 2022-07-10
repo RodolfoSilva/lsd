@@ -11,7 +11,7 @@ class LsdAction {
     return this;
   }
 
-  Future<dynamic> perform(BuildContext context, dynamic params) {
+  Future<dynamic> perform(BuildContext Function() getContext, dynamic params) {
     throw UnimplementedError();
   }
 }

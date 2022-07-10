@@ -2,16 +2,22 @@ import 'package:flutter/widgets.dart' show Widget, BuildContext;
 
 import '../lsd.dart';
 
-class LsdWidget {
-  const LsdWidget(this.lsd);
+abstract class LsdWidget {
+  LsdWidget(this.lsd);
 
   final Lsd lsd;
+  late BuildContext context;
+
+  BuildContext getContext() => context;
 
   LsdWidget fromJson(Map<String, dynamic> props) {
     return this;
   }
 
-  Widget build(BuildContext context) {
-    throw UnimplementedError();
+  Widget toWidth(BuildContext context) {
+    this.context = context;
+    return build(context);
   }
+
+  Widget build(BuildContext context);
 }

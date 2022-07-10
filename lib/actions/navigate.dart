@@ -31,33 +31,38 @@ class NavigateAction extends LsdAction {
     return super.fromJson(props);
   }
 
-  _performLater(BuildContext context, [Map<String, dynamic>? params]) {
-    Future.microtask(() => after?.perform(context, params));
+  _performLater(BuildContext Function() getContext,
+      [Map<String, dynamic>? params]) {
+    Future.microtask(() => after?.perform(getContext, params));
   }
 
   @override
-  Future<dynamic> perform(BuildContext context, dynamic params) async {
+  Future<dynamic> perform(
+    BuildContext Function() getContext,
+    dynamic params,
+  ) async {
     if (destination == null) {
       return null;
     }
 
+    final navigator = Navigator.of(getContext());
+
     if (destination is String) {
-      Navigator.pop(context, this.result);
-      _performLater(context, {"result": this.result});
+      navigator.pop(this.result);
+      _performLater(getContext, {"result": this.result});
       return null;
     }
 
     int executionCount = 0;
     final pageRoute = MaterialPageRoute(
       builder: (context) {
-        executionCount++ == 0 ? _performLater(context, params) : null;
-        return (destination as LsdWidget).build(context);
+        executionCount++ == 0 ? _performLater(getContext, params) : null;
+        return (destination as LsdWidget).toWidth(context);
       },
     );
 
     if (reset) {
-      final result = await Navigator.pushAndRemoveUntil(
-        context,
+      final result = await navigator.pushAndRemoveUntil(
         pageRoute,
         (Route<dynamic> route) => false,
       );
@@ -66,18 +71,12 @@ class NavigateAction extends LsdAction {
     }
 
     if (replace) {
-      final result = await Navigator.pushReplacement(
-        context,
-        pageRoute,
-      );
+      final result = await navigator.pushReplacement(pageRoute);
       debugPrint(jsonEncode({"result": result}));
       return {"result": result};
     }
 
-    final result = await Navigator.push(
-      context,
-      pageRoute,
-    );
+    final result = await navigator.push(pageRoute);
     debugPrint(jsonEncode({"result": result}));
     return {"result": result};
   }

@@ -35,12 +35,14 @@ class LsdFormDataWidget extends InheritedWidget {
     _state.setValue(key, value);
   }
 
-  Future<bool> validate(BuildContext context) async {
+  Future<bool> validate(
+    BuildContext Function() getContext,
+  ) async {
     _state.errors.value = {};
     Map<String, String> errors = {};
     await Future.wait(_state.validations.entries.toList().map((entry) async {
-      final result =
-          await entry.value.validate(context, _state.values[entry.key] ?? "");
+      final result = await entry.value
+          .validate(getContext, _state.values[entry.key] ?? "");
       if (!result.isValid) {
         errors[entry.key] = result.error!;
       }

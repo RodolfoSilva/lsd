@@ -37,7 +37,7 @@ class _LsdSafeWidgetBuilderState extends State<LsdSafeWidgetBuilder> {
   @override
   Widget build(BuildContext context) {
     if (_parseState is _ParseStateSuccess) {
-      return (_parseState as _ParseStateSuccess).widget.build(context);
+      return (_parseState as _ParseStateSuccess).widget.toWidth(context);
     }
 
     if (_parseState is _ParseStateError) {

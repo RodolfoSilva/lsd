@@ -9,9 +9,9 @@ class LsdFormValidator {
   final List<LsdAction> validations;
 
   Future<LsdValidationResult> validate(
-      BuildContext context, String value) async {
+      BuildContext Function() getContext, String value) async {
     for (final validation in validations) {
-      final result = await validation.perform(context, value);
+      final result = await validation.perform(getContext, value);
 
       if (result is LsdValidationResult) {
         return result;

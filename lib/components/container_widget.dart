@@ -18,7 +18,7 @@ class ContainerWidget extends LsdWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(padding.toDouble()),
-      child: child.build(context),
+      child: child.toWidth(context),
     );
   }
 }

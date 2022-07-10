@@ -15,13 +15,15 @@ class LsdSubmitFormAction extends LsdAction {
   }
 
   @override
-  Future<dynamic> perform(BuildContext context, dynamic params) async {
-    final formData = LsdFormDataWidget.of(context);
-    final isValid = await formData.validate(context);
+  Future<dynamic> perform(
+    BuildContext Function() getContext,
+    dynamic params,
+  ) async {
+    final formData = LsdFormDataWidget.of(getContext());
+    final isValid = await formData.validate(getContext);
 
     if (isValid) {
-      // ignore: use_build_context_synchronously
-      await action.perform(context, formData.values);
+      await action.perform(getContext, formData.values);
     }
 
     return isValid;

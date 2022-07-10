@@ -16,7 +16,10 @@ class RequiredValidationAction extends LsdAction {
   }
 
   @override
-  Future<dynamic> perform(BuildContext context, dynamic params) async {
+  Future<dynamic> perform(
+    BuildContext Function() getContext,
+    dynamic params,
+  ) async {
     if (params is! String) {
       return LsdValidationResult.invalid("Invalid type");
     }

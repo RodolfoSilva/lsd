@@ -20,16 +20,20 @@ class ButtonWidget extends LsdWidget {
     return super.fromJson(props);
   }
 
-  _onPressed(BuildContext context) => () => onPress?.perform(context, null);
-
   @override
   Widget build(BuildContext context) {
-    final child = this.child.build(context);
+    final child = this.child.toWidth(context);
 
     if (variant == "text") {
-      return TextButton(onPressed: _onPressed(context), child: child);
+      return TextButton(
+        onPressed: () => onPress?.perform(getContext, null),
+        child: child,
+      );
     }
 
-    return ElevatedButton(onPressed: _onPressed(context), child: child);
+    return ElevatedButton(
+      onPressed: () => onPress?.perform(getContext, null),
+      child: child,
+    );
   }
 }

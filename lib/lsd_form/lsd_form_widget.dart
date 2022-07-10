@@ -53,7 +53,7 @@ class _FormWidgetState extends State<_FormWidget> {
       lsd: widget.lsd,
       formState: _formDataState,
       child: Builder(
-        builder: (context) => widget.child.build(context),
+        builder: (context) => widget.child.toWidth(context),
       ),
     );
   }
