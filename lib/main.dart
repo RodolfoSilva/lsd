@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
+import 'package:serview/actions/send_to_server.dart';
 
 import 'actions/dialog.dart';
 import 'actions/navigate.dart';
@@ -58,6 +59,10 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     actionParser: DefaultLsdActionParser(
       actionsShelf: LsdActionsShelf()
+        ..register(
+          "SendToServer",
+          (lsd) => SendToServerAction(lsd, ApiService()),
+        )
         ..register("Navigate", NavigateAction.new)
         ..register("ShowDialog", ShowDialogAction.new)
         ..register("RequiredValidation", RequiredValidationAction.new)
@@ -65,23 +70,26 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     buildLoadingWidget: () => const LoadingWidget(),
     buildErrorWidget: () => Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
-          SizedBox(width: double.infinity),
-          Text(
-            "Ocorreu um erro",
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            "Não foi possível carregar as informações.",
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            "Verifique sua conexão e tente novamente",
-            textAlign: TextAlign.center,
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            SizedBox(width: double.infinity),
+            Text(
+              "Ocorreu um erro",
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              "Não foi possível carregar as informações.",
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              "Verifique sua conexão e tente novamente",
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     ),
   );
