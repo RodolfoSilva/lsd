@@ -19,11 +19,24 @@ class ScreenWidget extends LsdWidget {
   Widget build(BuildContext context) {
     final title = this.title != null ? AppBar(title: Text(this.title!)) : null;
 
-    return Scaffold(
-      appBar: title,
-      body: body != null
-          ? Builder(builder: (context) => body!.toWidth(context))
-          : null,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: title,
+          body: body != null
+              ? Builder(builder: (context) => body!.toWidth(context))
+              : null,
+        ),
+        // if (_isLoading)
+        const Opacity(
+          opacity: 0.5,
+          child: ModalBarrier(dismissible: false, color: Colors.black),
+        ),
+        // if (_isLoading)
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ],
     );
   }
 }
