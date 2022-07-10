@@ -4,16 +4,16 @@ import 'package:lsd/lsd.dart';
 import 'actions/dialog.dart';
 import 'actions/navigate.dart';
 import 'actions/required_validation.dart';
-import 'actions/submit_form.dart';
 import 'components/button_widget.dart';
 import 'components/column_widget.dart';
 import 'components/container_widget.dart';
-import 'components/form_widget.dart';
 import 'components/input_widget.dart';
 import 'components/screen_widget.dart';
 import 'components/text_widget.dart';
 import 'loader.dart';
 import 'loading_widget.dart';
+import 'lsd_form/lsd_form_widget.dart';
+import 'lsd_form/lsd_submit_form.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ..register("Container", ContainerWidget.new)
         ..register("Column", ColumnWidget.new)
         ..register("Button", ButtonWidget.new)
-        ..register("Form", FormWidget.new)
+        ..register("Form", LsdFormWidget.new)
         ..register("Input", InputWidget.new)
         ..register("Screen", ScreenWidget.new)
         ..register("Text", TextWidget.new),
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ..register("Navigate", NavigateAction.new)
         ..register("ShowDialog", ShowDialogAction.new)
         ..register("RequiredValidation", RequiredValidationAction.new)
-        ..register("SubmitForm", SubmitFormAction.new),
+        ..register("SubmitForm", LsdSubmitFormAction.new),
     ),
     buildLoadingWidget: () => const LoadingWidget(),
     buildErrorWidget: () => Scaffold(

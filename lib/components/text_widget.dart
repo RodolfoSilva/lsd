@@ -4,7 +4,7 @@ import 'package:lsd/lsd.dart';
 class TextWidget extends LsdWidget {
   late String text;
 
-  TextWidget(super.serView);
+  TextWidget(super.lsd);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {

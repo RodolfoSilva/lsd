@@ -6,7 +6,7 @@ class ButtonWidget extends LsdWidget {
   late final LsdAction? onPress;
   late String variant;
 
-  ButtonWidget(super.serView);
+  ButtonWidget(super.lsd);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {

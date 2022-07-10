@@ -1,1 +1,0 @@
-class SerViewError implements Exception {}

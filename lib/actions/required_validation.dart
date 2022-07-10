@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
-import '../components/form_widget.dart';
+import '../lsd_form/lsd_validation_result.dart';
 
 class RequiredValidationAction extends LsdAction {
   RequiredValidationAction(super.lsd);
@@ -18,13 +18,13 @@ class RequiredValidationAction extends LsdAction {
   @override
   Future<dynamic> perform(BuildContext context, dynamic params) async {
     if (params is! String) {
-      return ValidationResult.invalid("Invalid type");
+      return LsdValidationResult.invalid("Invalid type");
     }
 
     if (params == "") {
-      return ValidationResult.invalid(message);
+      return LsdValidationResult.invalid(message);
     }
 
-    return ValidationResult.valid();
+    return LsdValidationResult.valid();
   }
 }

@@ -5,7 +5,7 @@ class ContainerWidget extends LsdWidget {
   late LsdWidget child;
   late int padding;
 
-  ContainerWidget(super.serView);
+  ContainerWidget(super.lsd);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
