@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
+import '../lsd_form/lsd_form_data_widget.dart';
+
 class ButtonWidget extends LsdWidget {
   late final LsdWidget child;
   late final LsdAction? onPress;
@@ -22,18 +24,52 @@ class ButtonWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = this.child.toWidth(context);
+    final formData =
+        context.dependOnInheritedWidgetOfExactType<LsdFormDataWidget>();
+
+    if (formData != null) {
+      return ValueListenableBuilder<bool>(
+        valueListenable: formData.submitting,
+        child: child.toWidth(context),
+        builder: (context, submitting, child) => internalBuild(
+          context,
+          submitting: submitting,
+          child: child!,
+        ),
+      );
+    }
+
+    return internalBuild(
+      context,
+      child: child.toWidth(context),
+    );
+  }
+
+  Widget internalBuild(
+    BuildContext context, {
+    bool submitting = false,
+    required Widget child,
+  }) {
+    final finalChild = submitting
+        ? const SizedBox(
+            height: 15,
+            width: 15,
+            child: CircularProgressIndicator(color: Colors.white))
+        : child;
+
+    final onPress =
+        submitting ? () => null : () => this.onPress?.perform(getContext, null);
 
     if (variant == "text") {
       return TextButton(
-        onPressed: () => onPress?.perform(getContext, null),
-        child: child,
+        onPressed: onPress,
+        child: finalChild,
       );
     }
 
     return ElevatedButton(
-      onPressed: () => onPress?.perform(getContext, null),
-      child: child,
+      onPressed: onPress,
+      child: finalChild,
     );
   }
 }

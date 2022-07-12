@@ -20,12 +20,18 @@ class LsdSubmitFormAction extends LsdAction {
     dynamic params,
   ) async {
     final formData = LsdFormDataWidget.of(getContext());
-    final isValid = await formData.validate(getContext);
 
-    if (isValid) {
-      await action.perform(getContext, formData.values);
+    try {
+      formData.setSubmitting(true);
+      final isValid = await formData.validate(getContext);
+
+      if (isValid) {
+        await action.perform(getContext, formData.values);
+      }
+
+      return isValid;
+    } finally {
+      formData.setSubmitting(false);
     }
-
-    return isValid;
   }
 }

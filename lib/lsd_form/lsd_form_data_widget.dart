@@ -16,6 +16,12 @@ class LsdFormDataWidget extends InheritedWidget {
 
   ValueNotifier<Map<String, String>> get errors => _state.errors;
   Map<String, String?> get values => _state.values;
+  ValueNotifier<bool> get submitting => _state.submitting;
+  bool get isSubmitting => _state.isSubmitting;
+
+  void setSubmitting(bool submitting) {
+    _state.setSubmitting(submitting);
+  }
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {

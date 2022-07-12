@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
+import '../components/screen_inherited_widget.dart';
 import '../loader.dart';
 
 class SendToServerAction extends LsdAction {
@@ -21,7 +22,14 @@ class SendToServerAction extends LsdAction {
     BuildContext Function() getContext,
     dynamic params,
   ) async {
-    final result = await apiService.post(endpoint, params);
+    final screenState = ScreenInheritedWidget.of(getContext());
+    screenState.setBusy(true);
+    Map<String, dynamic>? result;
+    try {
+      result = await apiService.post(endpoint, params);
+    } finally {
+      screenState.setBusy(false);
+    }
 
     if (result != null) {
       return lsd
