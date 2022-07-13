@@ -31,16 +31,12 @@ class NavigateAction extends LsdAction {
     return super.fromJson(props);
   }
 
-  _performLater(BuildContext Function() getContext,
-      [Map<String, dynamic>? params]) {
+  _performLater(GetContext getContext, [Map<String, dynamic>? params]) {
     Future.microtask(() => after?.perform(getContext, params));
   }
 
   @override
-  Future<dynamic> perform(
-    BuildContext Function() getContext,
-    dynamic params,
-  ) async {
+  Future<dynamic> perform(GetContext getContext, dynamic params) async {
     if (destination == null) {
       return null;
     }

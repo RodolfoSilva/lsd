@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lsd/lsd.dart';
 
 import 'lsd_form_data_widget.dart';
 
@@ -8,6 +9,8 @@ class LsdFormFieldWidgetBuilder extends StatefulWidget {
     required this.name,
     required this.builder,
     this.child,
+    this.initialValue,
+    this.validations = const [],
   }) : super(key: key);
   final String name;
   final Widget Function(
@@ -18,6 +21,8 @@ class LsdFormFieldWidgetBuilder extends StatefulWidget {
   ) builder;
 
   final Widget? child;
+  final String? initialValue;
+  final List<LsdAction> validations;
 
   @override
   State<LsdFormFieldWidgetBuilder> createState() =>
@@ -30,8 +35,14 @@ class _LsdFormFieldWidgetBuilderState extends State<LsdFormFieldWidgetBuilder> {
   @override
   void initState() {
     Future.microtask(() {
-      _controller.text =
-          LsdFormDataWidget.of(context).values[widget.name] ?? "";
+      final lsdFormData = LsdFormDataWidget.of(context);
+      lsdFormData.register(
+        widget.name,
+        widget.initialValue ?? "",
+        widget.validations,
+      );
+
+      _controller.text = lsdFormData.values[widget.name]!;
     });
 
     _controller.addListener(_onChanged);

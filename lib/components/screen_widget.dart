@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-import 'package:serview/components/screen_inherited_widget.dart';
-import 'package:serview/components/screen_state.dart';
+
+import 'screen_inherited_widget.dart';
+import 'screen_state.dart';
 
 class ScreenWidget extends LsdWidget {
   late final String? title;

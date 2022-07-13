@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
 import '../components/screen_inherited_widget.dart';
@@ -18,10 +17,7 @@ class SendToServerAction extends LsdAction {
   }
 
   @override
-  Future<dynamic> perform(
-    BuildContext Function() getContext,
-    dynamic params,
-  ) async {
+  Future<dynamic> perform(GetContext getContext, dynamic params) async {
     final screenState = ScreenInheritedWidget.of(getContext());
     screenState.setBusy(true);
     Map<String, dynamic>? result;
