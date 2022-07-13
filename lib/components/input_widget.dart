@@ -5,6 +5,7 @@ import '../lsd_form/lsd_form_field.dart';
 
 class InputWidget extends LsdWidget {
   late String name;
+  late LsdWidget? label;
   late String? initialValue;
   late List<LsdAction> validations;
 
@@ -13,6 +14,7 @@ class InputWidget extends LsdWidget {
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
     name = props["name"];
+    label = props["label"] != null ? lsd.parseWidget(props["label"]) : null;
     initialValue = props["initialValue"];
     validations = List<Map<String, dynamic>>.from(props["validations"] ?? [])
         .map((e) => lsd.parseAction(e))
@@ -29,7 +31,8 @@ class InputWidget extends LsdWidget {
       builder: (context, controller, error, child) {
         return TextField(
           controller: controller,
-          decoration: InputDecoration(errorText: error),
+          decoration:
+              InputDecoration(label: label?.toWidth(context), errorText: error),
         );
       },
     );

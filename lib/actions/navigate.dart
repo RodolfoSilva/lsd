@@ -43,10 +43,20 @@ class NavigateAction extends LsdAction {
 
     final navigator = Navigator.of(getContext());
 
-    if (destination is String) {
+    if (destination is String && "../" == destination) {
       navigator.pop(this.result);
+
       _performLater(getContext, {"result": this.result});
       return null;
+    }
+
+    if (destination is String &&
+        (destination as String).toLowerCase().startsWith("route://")) {
+      final path =
+          (destination as String).replaceFirst(RegExp(r'route:\/\/'), '');
+
+      final result = await navigator.pushNamed(path);
+      return {"result": result};
     }
 
     int executionCount = 0;

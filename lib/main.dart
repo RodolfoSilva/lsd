@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 import 'package:serview/actions/send_to_server.dart';
+import 'package:serview/components/center_widget.dart';
+import 'package:serview/components/dynamic_widget.dart';
 
 import 'actions/dialog.dart';
 import 'actions/navigate.dart';
@@ -17,39 +19,12 @@ import 'lsd_form/lsd_form_widget.dart';
 import 'lsd_form/lsd_submit_form.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   final lsd = Lsd(
     widgetParser: DefaultLsdWidgetParser(
       widgetsShelf: LsdWidgetsShelf()
+        ..register("Dynamic", DynamicWidget.new)
         ..register("Container", ContainerWidget.new)
+        ..register("Center", CenterWidget.new)
         ..register("Column", ColumnWidget.new)
         ..register("Button", ButtonWidget.new)
         ..register("Form", LsdFormWidget.new)
@@ -69,8 +44,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ..register("SubmitForm", LsdSubmitFormAction.new),
     ),
     buildLoadingWidget: () => const LoadingWidget(),
-    buildErrorWidget: () => Scaffold(
-      body: Center(
+    buildErrorWidget: () => Material(
+      child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,33 +69,63 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   );
 
-  late Future<Map<String, dynamic>> _screen;
+  runApp(MyApp(lsd: lsd));
+}
 
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key, required this.lsd}) : super(key: key);
+
+  final Lsd lsd;
+
+  // This widget is the root of your application.
   @override
-  void initState() {
-    super.initState();
-
-    _screen = load("/main");
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(lsd: lsd),
+        '/about': (context) => const MyWidget(),
+      },
+    );
   }
+}
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: _screen,
-      builder: (context, data) {
-        if (data.connectionState != ConnectionState.done) {
-          return lsd.renderLoading(context);
-        }
-
-        if (data.hasError) {
-          return lsd.renderError(context, data.error);
-        }
-
-        return LsdSafeWidgetBuilder(
-          lsd: lsd,
-          element: data.data!,
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter Demo'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text('Native Flutter Screen'),
+          ],
+        ),
+      ),
     );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required this.lsd}) : super(key: key);
+
+  final Lsd lsd;
+  @override
+  Widget build(BuildContext context) {
+    return lsd.parseWidget({
+      "component": "Dynamic",
+      "props": {
+        "path": "/api/main",
+      }
+    }).toWidth(context);
   }
 }
