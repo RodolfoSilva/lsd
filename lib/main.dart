@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-import 'package:serview/actions/send_to_server.dart';
-import 'package:serview/components/center_widget.dart';
-import 'package:serview/components/dynamic_widget.dart';
+import 'package:lsd_form/lsd_form.dart';
 
 import 'actions/dialog.dart';
 import 'actions/navigate.dart';
 import 'actions/required_validation.dart';
+import 'actions/send_to_server.dart';
 import 'components/button_widget.dart';
+import 'components/center_widget.dart';
 import 'components/column_widget.dart';
 import 'components/container_widget.dart';
+import 'components/dynamic_widget.dart';
 import 'components/input_widget.dart';
+import 'components/lsd_route_controller_provider.dart';
 import 'components/screen_widget.dart';
 import 'components/text_widget.dart';
 import 'loader.dart';
 import 'loading_widget.dart';
-import 'lsd_form/lsd_form_widget.dart';
-import 'lsd_form/lsd_submit_form.dart';
 
 void main() {
   final lsd = Lsd(
@@ -49,20 +49,26 @@ void main() {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            SizedBox(width: double.infinity),
-            Text(
+          children: [
+            const SizedBox(width: double.infinity),
+            const Text(
               "Ocorreu um erro",
               textAlign: TextAlign.center,
             ),
-            Text(
+            const Text(
               "Não foi possível carregar as informações.",
               textAlign: TextAlign.center,
             ),
-            Text(
+            const Text(
               "Verifique sua conexão e tente novamente",
               textAlign: TextAlign.center,
             ),
+            Builder(builder: (context) {
+              return ElevatedButton(
+                child: const Text("Tentar novamente"),
+                onPressed: () => LsdRouteControllerProvider.of(context).load(),
+              );
+            }),
           ],
         ),
       ),

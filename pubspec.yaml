@@ -37,6 +37,8 @@ dependencies:
   dio: ^4.0.6
   lsd:
     path: ./packages/lsd
+  lsd_form:
+    path: ./packages/lsd_form
 
 dev_dependencies:
   flutter_test:

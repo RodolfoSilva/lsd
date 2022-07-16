@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 
 import 'screen_state.dart';
 
-class ScreenInheritedWidget extends InheritedWidget {
-  const ScreenInheritedWidget({
+class ScreenProvider extends InheritedWidget {
+  const ScreenProvider({
     Key? key,
     required ScreenState state,
     required Widget child,
@@ -21,9 +21,8 @@ class ScreenInheritedWidget extends InheritedWidget {
     _state.setBusy(busy);
   }
 
-  static ScreenInheritedWidget of(BuildContext context) {
-    final result =
-        context.dependOnInheritedWidgetOfExactType<ScreenInheritedWidget>();
+  static ScreenProvider of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<ScreenProvider>();
     assert(result != null, 'No ScreenWidget found in context');
     return result!;
   }

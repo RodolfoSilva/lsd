@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-import 'package:serview/loader.dart';
+
+import '../loader.dart';
+import 'lsd_route_controller.dart';
+import 'lsd_route_controller_provider.dart';
 
 class DynamicWidget extends LsdWidget {
   late String path;
+  final LsdRouteController _routeController = LsdRouteController();
 
   DynamicWidget(super.lsd);
 
@@ -15,9 +21,12 @@ class DynamicWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _DynamicWidget(
-      path: path,
-      lsd: lsd,
+    return LsdRouteControllerProvider(
+      controller: _routeController,
+      child: _DynamicWidget(
+        path: path,
+        lsd: lsd,
+      ),
     );
   }
 }
@@ -34,18 +43,37 @@ class _DynamicWidget extends StatefulWidget {
 }
 
 class _DynamicWidgetState extends State<_DynamicWidget> {
-  late Future<Map<String, dynamic>> _widget;
+  Future<Map<String, dynamic>>? _widget;
+
+  StreamSubscription<LsdRouteEvent>? _routeSubscription;
 
   @override
   void initState() {
     super.initState();
 
     _widget = load(widget.path);
+
+    Future.microtask(() {
+      _routeSubscription =
+          LsdRouteControllerProvider.of(context).stream.listen((event) {
+        if (event is LsdRouteEventLoad) {
+          setState(() {
+            _widget = load(widget.path);
+          });
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _routeSubscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<Map<String, dynamic>?>(
       future: _widget,
       builder: (context, data) {
         if (data.connectionState != ConnectionState.done) {

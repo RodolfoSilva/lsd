@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-
-import '../lsd_form/lsd_form_data_widget.dart';
+import 'package:lsd_form/lsd_form.dart';
 
 class ButtonWidget extends LsdWidget {
   late final LsdWidget child;
@@ -25,7 +24,7 @@ class ButtonWidget extends LsdWidget {
   @override
   Widget build(BuildContext context) {
     final formData =
-        context.dependOnInheritedWidgetOfExactType<LsdFormDataWidget>();
+        context.dependOnInheritedWidgetOfExactType<LsdFormProvider>();
 
     if (formData != null) {
       return ValueListenableBuilder<bool>(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
-import 'lsd_form_data_widget.dart';
+import 'lsd_form_provider.dart';
 
 class LsdSubmitFormAction extends LsdAction {
   LsdSubmitFormAction(super.lsd);
@@ -19,7 +19,7 @@ class LsdSubmitFormAction extends LsdAction {
     BuildContext Function() getContext,
     dynamic params,
   ) async {
-    final formData = LsdFormDataWidget.of(getContext());
+    final formData = LsdFormProvider.of(getContext());
 
     try {
       formData.setSubmitting(true);

@@ -1,6 +1,5 @@
 import 'package:lsd/lsd.dart';
-
-import '../lsd_form/lsd_validation_result.dart';
+import 'package:lsd_form/lsd_form.dart';
 
 class RequiredValidationAction extends LsdAction {
   RequiredValidationAction(super.lsd);

@@ -3,8 +3,8 @@ import 'package:lsd/lsd.dart';
 
 import 'lsd_form_data_state.dart';
 
-class LsdFormDataWidget extends InheritedWidget {
-  const LsdFormDataWidget({
+class LsdFormProvider extends InheritedWidget {
+  const LsdFormProvider({
     Key? key,
     required Lsd lsd,
     required LsdFormDataState formState,
@@ -59,9 +59,9 @@ class LsdFormDataWidget extends InheritedWidget {
     return errors.isEmpty;
   }
 
-  static LsdFormDataWidget of(BuildContext context) {
+  static LsdFormProvider of(BuildContext context) {
     final result =
-        context.dependOnInheritedWidgetOfExactType<LsdFormDataWidget>();
+        context.dependOnInheritedWidgetOfExactType<LsdFormProvider>();
     assert(result != null, 'No FormWidget found in context');
     return result!;
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-
-import '../lsd_form/lsd_form_field.dart';
+import 'package:lsd_form/lsd_form.dart';
 
 class InputWidget extends LsdWidget {
   late String name;

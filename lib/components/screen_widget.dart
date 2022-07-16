@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
-import 'screen_inherited_widget.dart';
+import 'screen_provider.dart';
 import 'screen_state.dart';
 
 class ScreenWidget extends LsdWidget {
@@ -60,8 +60,7 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenInheritedWidget(
-      // lsd: widget.lsd,
+    return ScreenProvider(
       state: _screenState,
       child: ValueListenableBuilder<bool>(
         valueListenable: _screenState.busy,

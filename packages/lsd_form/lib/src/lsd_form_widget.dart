@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
 import 'lsd_form_data_state.dart';
-import 'lsd_form_data_widget.dart';
+import 'lsd_form_provider.dart';
 
 class LsdFormWidget extends LsdWidget {
   late LsdWidget child;
@@ -49,7 +49,7 @@ class _FormWidgetState extends State<_FormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return LsdFormDataWidget(
+    return LsdFormProvider(
       lsd: widget.lsd,
       formState: _formDataState,
       child: Builder(
