@@ -7,6 +7,7 @@ import 'screen_state.dart';
 class ScreenWidget extends LsdWidget {
   late final String? title;
   late final LsdWidget? body;
+  late final LsdAction? onReady;
 
   ScreenWidget(super.lsd);
 
@@ -14,6 +15,8 @@ class ScreenWidget extends LsdWidget {
   LsdWidget fromJson(Map<String, dynamic> props) {
     title = props["title"];
     body = props["body"] != null ? lsd.parseWidget(props["body"]!) : null;
+    onReady =
+        props["onReady"] != null ? lsd.parseAction(props["onReady"]!) : null;
 
     return super.fromJson(props);
   }
@@ -24,6 +27,7 @@ class ScreenWidget extends LsdWidget {
 
     return _ScreenWidget(
       lsd: lsd,
+      onReady: onReady,
       child: Scaffold(
         appBar: title,
         body: body != null
@@ -39,10 +43,12 @@ class _ScreenWidget extends StatefulWidget {
     Key? key,
     required this.lsd,
     required this.child,
+    this.onReady,
   }) : super(key: key);
 
   final Lsd lsd;
   final Widget child;
+  final LsdAction? onReady;
 
   @override
   State<_ScreenWidget> createState() => _ScreenWidgetState();
@@ -56,6 +62,7 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
     super.initState();
 
     _screenState = ScreenState();
+    Future.microtask(() => widget.onReady?.perform(() => context, null));
   }
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
@@ -31,7 +29,7 @@ class NavigateAction extends LsdAction {
     return super.fromJson(props);
   }
 
-  _performLater(GetContext getContext, [Map<String, dynamic>? params]) {
+  _performLater(GetContext getContext, [dynamic params]) {
     Future.microtask(() => after?.perform(getContext, params));
   }
 
@@ -44,9 +42,9 @@ class NavigateAction extends LsdAction {
     final navigator = Navigator.of(getContext());
 
     if (destination is String && "../" == destination) {
-      navigator.pop(this.result);
+      navigator.pop(result);
 
-      _performLater(getContext, {"result": this.result});
+      _performLater(getContext, result);
       return null;
     }
 
@@ -55,8 +53,7 @@ class NavigateAction extends LsdAction {
       final path =
           (destination as String).replaceFirst(RegExp(r'route:\/\/'), '');
 
-      final result = await navigator.pushNamed(path);
-      return {"result": result};
+      return navigator.pushNamed(path);
     }
 
     int executionCount = 0;
@@ -68,22 +65,16 @@ class NavigateAction extends LsdAction {
     );
 
     if (reset) {
-      final result = await navigator.pushAndRemoveUntil(
+      return navigator.pushAndRemoveUntil(
         pageRoute,
         (Route<dynamic> route) => false,
       );
-      debugPrint(jsonEncode({"result": result}));
-      return {"result": result};
     }
 
     if (replace) {
-      final result = await navigator.pushReplacement(pageRoute);
-      debugPrint(jsonEncode({"result": result}));
-      return {"result": result};
+      return navigator.pushReplacement(pageRoute);
     }
 
-    final result = await navigator.push(pageRoute);
-    debugPrint(jsonEncode({"result": result}));
-    return {"result": result};
+    return navigator.push(pageRoute);
   }
 }

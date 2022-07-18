@@ -3,6 +3,13 @@ import 'package:lsd/lsd.dart';
 
 import 'lsd_form_provider.dart';
 
+typedef LsdFieldBuilder = Widget Function(
+  BuildContext context,
+  TextEditingController controller,
+  String? error,
+  Widget? child,
+);
+
 class LsdFormFieldWidgetBuilder extends StatefulWidget {
   const LsdFormFieldWidgetBuilder({
     Key? key,
@@ -12,13 +19,10 @@ class LsdFormFieldWidgetBuilder extends StatefulWidget {
     this.initialValue,
     this.validations = const [],
   }) : super(key: key);
+
   final String name;
-  final Widget Function(
-    BuildContext context,
-    TextEditingController controller,
-    String? error,
-    Widget? child,
-  ) builder;
+
+  final LsdFieldBuilder builder;
 
   final Widget? child;
   final String? initialValue;
@@ -42,7 +46,18 @@ class _LsdFormFieldWidgetBuilderState extends State<LsdFormFieldWidgetBuilder> {
         widget.validations,
       );
 
-      _controller.text = lsdFormData.values[widget.name]!;
+      if (lsdFormData.values[widget.name] == null) {
+        _controller.text = "";
+        return;
+      }
+
+      if (lsdFormData.values[widget.name] is String) {
+        _controller.text = lsdFormData.values[widget.name] as String;
+      }
+
+      if (lsdFormData.values[widget.name] is num) {
+        _controller.text = (lsdFormData.values[widget.name] as num).toString();
+      }
     });
 
     _controller.addListener(_onChanged);

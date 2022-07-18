@@ -3,15 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
-import '../loader.dart';
+import '../api_service.dart';
 import 'lsd_route_controller.dart';
 import 'lsd_route_controller_provider.dart';
 
 class DynamicWidget extends LsdWidget {
   late String path;
   final LsdRouteController _routeController = LsdRouteController();
+  final ApiService apiService;
 
-  DynamicWidget(super.lsd);
+  DynamicWidget(super.lsd, this.apiService);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
@@ -24,6 +25,7 @@ class DynamicWidget extends LsdWidget {
     return LsdRouteControllerProvider(
       controller: _routeController,
       child: _DynamicWidget(
+        apiService: apiService,
         path: path,
         lsd: lsd,
       ),
@@ -32,18 +34,23 @@ class DynamicWidget extends LsdWidget {
 }
 
 class _DynamicWidget extends StatefulWidget {
-  const _DynamicWidget({Key? key, required this.path, required this.lsd})
-      : super(key: key);
+  const _DynamicWidget({
+    Key? key,
+    required this.path,
+    required this.apiService,
+    required this.lsd,
+  }) : super(key: key);
 
   final String path;
   final Lsd lsd;
+  final ApiService apiService;
 
   @override
   State<_DynamicWidget> createState() => _DynamicWidgetState();
 }
 
 class _DynamicWidgetState extends State<_DynamicWidget> {
-  Future<Map<String, dynamic>>? _widget;
+  Future<Map<String, dynamic>?>? _widget;
 
   StreamSubscription<LsdRouteEvent>? _routeSubscription;
 
@@ -51,14 +58,14 @@ class _DynamicWidgetState extends State<_DynamicWidget> {
   void initState() {
     super.initState();
 
-    _widget = load(widget.path);
+    _widget = widget.apiService.get(widget.path);
 
     Future.microtask(() {
       _routeSubscription =
           LsdRouteControllerProvider.of(context).stream.listen((event) {
         if (event is LsdRouteEventLoad) {
           setState(() {
-            _widget = load(widget.path);
+            _widget = widget.apiService.get(widget.path);
           });
         }
       });

@@ -28,7 +28,7 @@ class ButtonWidget extends LsdWidget {
 
     if (formData != null) {
       return ValueListenableBuilder<bool>(
-        valueListenable: formData.submitting,
+        valueListenable: LsdFormProvider.of(context).submitting,
         child: child.toWidth(context),
         builder: (context, submitting, child) => internalBuild(
           context,

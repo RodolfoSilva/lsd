@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
@@ -24,7 +22,7 @@ class ShowDialogAction extends LsdAction {
 
   @override
   Future<dynamic> perform(GetContext getContext, dynamic params) async {
-    final result = await showDialog<String?>(
+    return showDialog<dynamic>(
       context: getContext(),
       barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
@@ -33,8 +31,5 @@ class ShowDialogAction extends LsdAction {
         actions: actions.map((e) => e.toWidth(context)).toList(),
       ),
     );
-
-    debugPrint(jsonEncode({"result": result}));
-    return {"result": result};
   }
 }

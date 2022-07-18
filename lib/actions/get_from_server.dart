@@ -3,15 +3,15 @@ import 'package:lsd/lsd.dart';
 import '../api_service.dart';
 import '../components/screen_provider.dart';
 
-class SendToServerAction extends LsdAction {
-  SendToServerAction(super.lsd, this.apiService);
+class GetFromServerAction extends LsdAction {
+  GetFromServerAction(super.lsd, this.apiService);
 
   final ApiService apiService;
-  late String endpoint;
+  late final String endpoint;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
-    endpoint = props["endpoint"] ?? "Required!";
+    endpoint = props["endpoint"];
 
     return super.fromJson(props);
   }
@@ -22,7 +22,7 @@ class SendToServerAction extends LsdAction {
     screenState.setBusy(true);
     Map<String, dynamic>? result;
     try {
-      result = await apiService.post(endpoint, params);
+      result = await apiService.get(endpoint);
     } finally {
       screenState.setBusy(false);
     }
@@ -32,6 +32,7 @@ class SendToServerAction extends LsdAction {
           .parseAction(Map<String, dynamic>.from(result))
           .perform(getContext, params);
     }
+
     return result;
   }
 }

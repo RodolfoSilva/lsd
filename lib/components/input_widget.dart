@@ -6,6 +6,7 @@ class InputWidget extends LsdWidget {
   late String name;
   late LsdWidget? label;
   late String? initialValue;
+  late bool obscure;
   late List<LsdAction> validations;
 
   InputWidget(super.lsd);
@@ -13,6 +14,7 @@ class InputWidget extends LsdWidget {
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
     name = props["name"];
+    obscure = props["obscure"] ?? false;
     label = props["label"] != null ? lsd.parseWidget(props["label"]) : null;
     initialValue = props["initialValue"];
     validations = List<Map<String, dynamic>>.from(props["validations"] ?? [])
@@ -30,6 +32,7 @@ class InputWidget extends LsdWidget {
       builder: (context, controller, error, child) {
         return TextField(
           controller: controller,
+          obscureText: obscure,
           decoration:
               InputDecoration(label: label?.toWidth(context), errorText: error),
         );

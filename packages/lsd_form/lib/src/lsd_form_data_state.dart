@@ -1,13 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lsd/lsd.dart';
 
 import 'lsd_form_validator.dart';
 
 class LsdFormDataState {
-  final List<String> fields = [];
+  LsdFormDataState({required this.values});
+
   final Map<String, LsdFormValidator> validations = {};
-  final Map<String, String?> values = {};
+  Map<String, dynamic> values;
   final ValueNotifier<bool> _submitting = ValueNotifier(false);
   final ValueNotifier<Map<String, String>> errors = ValueNotifier({});
 
@@ -19,10 +19,9 @@ class LsdFormDataState {
     _submitting.value = submitting;
   }
 
-  void register(String name, String? initialValue,
+  void register(String name, dynamic initialValue,
       [List<LsdAction>? validations]) {
-    if (!fields.contains(name)) {
-      fields.add(name);
+    if (!values.containsKey(name)) {
       values[name] = initialValue;
     }
 
@@ -30,12 +29,30 @@ class LsdFormDataState {
   }
 
   void unregister(String name) {
-    if (fields.contains(name)) {
-      fields.removeWhere((n) => n == name);
+    if (values.containsKey(name)) {
+      values.remove(name);
     }
   }
 
-  void setValue(String key, String? value) {
+  void setValue(String key, dynamic value) {
     values[key] = value;
+  }
+
+  Future<bool> validate(
+    BuildContext Function() getContext,
+  ) async {
+    this.errors.value = {};
+    Map<String, String> errors = {};
+    await Future.wait(validations.entries.toList().map((entry) async {
+      final result =
+          await entry.value.validate(getContext, values[entry.key] ?? "");
+      if (!result.isValid) {
+        errors[entry.key] = result.error!;
+      }
+    }));
+
+    this.errors.value = errors;
+
+    return errors.isEmpty;
   }
 }

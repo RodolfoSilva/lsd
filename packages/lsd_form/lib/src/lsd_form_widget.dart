@@ -8,10 +8,12 @@ class LsdFormWidget extends LsdWidget {
   late LsdWidget child;
 
   LsdFormWidget(super.lsd);
+  late Map<String, String?> values;
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
     child = lsd.parseWidget(props["child"]);
+    values = Map<String, String?>.from(props["values"] ?? {});
     return super.fromJson(props);
   }
 
@@ -19,6 +21,7 @@ class LsdFormWidget extends LsdWidget {
   Widget build(BuildContext context) {
     return _FormWidget(
       lsd: lsd,
+      values: values,
       child: child,
     );
   }
@@ -28,11 +31,13 @@ class _FormWidget extends StatefulWidget {
   const _FormWidget({
     Key? key,
     required this.lsd,
+    required this.values,
     required this.child,
   }) : super(key: key);
 
   final Lsd lsd;
   final LsdWidget child;
+  final Map<String, String?> values;
 
   @override
   State<_FormWidget> createState() => _FormWidgetState();
@@ -44,7 +49,7 @@ class _FormWidgetState extends State<_FormWidget> {
   void initState() {
     super.initState();
 
-    _formDataState = LsdFormDataState();
+    _formDataState = LsdFormDataState(values: widget.values);
   }
 
   @override
