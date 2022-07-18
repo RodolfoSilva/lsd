@@ -33,8 +33,8 @@ class InputWidget extends LsdWidget {
         return TextField(
           controller: controller,
           obscureText: obscure,
-          decoration:
-              InputDecoration(label: label?.toWidth(context), errorText: error),
+          decoration: InputDecoration(
+              label: label?.toWidget(context), errorText: error),
         );
       },
     );

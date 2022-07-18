@@ -6,4 +6,7 @@ abstract class LsdWidgetParser {
 
   /// Converts an [Map<String, dynamic>] into a [LsdWidget]
   LsdWidget fromJson(Map<String, dynamic> element);
+
+  /// Check if an [dynamic] into a [LsdWidget] json
+  bool isWidget(dynamic element);
 }

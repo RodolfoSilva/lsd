@@ -29,7 +29,7 @@ class ButtonWidget extends LsdWidget {
     if (formData != null) {
       return ValueListenableBuilder<bool>(
         valueListenable: LsdFormProvider.of(context).submitting,
-        child: child.toWidth(context),
+        child: child.toWidget(context),
         builder: (context, submitting, child) => internalBuild(
           context,
           submitting: submitting,
@@ -40,7 +40,7 @@ class ButtonWidget extends LsdWidget {
 
     return internalBuild(
       context,
-      child: child.toWidth(context),
+      child: child.toWidget(context),
     );
   }
 

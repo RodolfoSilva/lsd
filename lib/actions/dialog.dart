@@ -26,9 +26,9 @@ class ShowDialogAction extends LsdAction {
       context: getContext(),
       barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
-        title: title.toWidth(context),
-        content: content.toWidth(context),
-        actions: actions.map((e) => e.toWidth(context)).toList(),
+        title: title.toWidget(context),
+        content: content.toWidget(context),
+        actions: actions.map((e) => e.toWidget(context)).toList(),
       ),
     );
   }

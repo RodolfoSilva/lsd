@@ -32,4 +32,9 @@ class DefaultLsdWidgetParser implements LsdWidgetParser {
         .create(element[_typeKey], lsd)
         .fromJson(element[_propsKey]);
   }
+
+  @override
+  bool isWidget(dynamic element) {
+    return element is Map && element.containsKey(_typeKey);
+  }
 }

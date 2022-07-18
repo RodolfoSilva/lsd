@@ -6,7 +6,7 @@ class NavigateAction extends LsdAction {
 
   late bool reset;
   late bool replace;
-  late String? result;
+  late dynamic result;
   late dynamic destination;
   late LsdAction? after;
 
@@ -17,7 +17,9 @@ class NavigateAction extends LsdAction {
     reset = props["reset"] == true;
 
     after = props["after"] != null ? lsd.parseAction(props["after"]) : null;
-    result = props["result"];
+    result = lsd.isAction(props["result"])
+        ? lsd.parseAction(Map<String, dynamic>.from(props["result"]))
+        : props["result"];
 
     if (destination is Map) {
       final screen = Map<String, dynamic>.from(destination);
@@ -42,6 +44,10 @@ class NavigateAction extends LsdAction {
     final navigator = Navigator.of(getContext());
 
     if (destination is String && "../" == destination) {
+      dynamic result = this.result is LsdAction
+          ? await this.result.perform(getContext, params)
+          : this.result;
+
       navigator.pop(result);
 
       _performLater(getContext, result);
@@ -60,7 +66,7 @@ class NavigateAction extends LsdAction {
     final pageRoute = MaterialPageRoute(
       builder: (context) {
         executionCount++ == 0 ? _performLater(getContext, params) : null;
-        return (destination as LsdWidget).toWidth(context);
+        return (destination as LsdWidget).toWidget(context);
       },
     );
 

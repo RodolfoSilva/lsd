@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
-class ContainerWidget extends LsdWidget {
+class ExpandedWidget extends LsdWidget {
   late LsdWidget child;
   late int padding;
 
-  ContainerWidget(super.lsd);
+  ExpandedWidget(super.lsd);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
@@ -16,8 +16,7 @@ class ContainerWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(padding.toDouble()),
+    return Expanded(
       child: child.toWidget(context),
     );
   }

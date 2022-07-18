@@ -8,10 +8,12 @@ class SendToServerAction extends LsdAction {
 
   final ApiService apiService;
   late String endpoint;
+  late final bool silent;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
-    endpoint = props["endpoint"] ?? "Required!";
+    endpoint = props["endpoint"];
+    silent = props["silent"] ?? false;
 
     return super.fromJson(props);
   }
@@ -19,12 +21,12 @@ class SendToServerAction extends LsdAction {
   @override
   Future<dynamic> perform(GetContext getContext, dynamic params) async {
     final screenState = ScreenProvider.of(getContext());
-    screenState.setBusy(true);
+    if (!silent) screenState.setBusy(true);
     Map<String, dynamic>? result;
     try {
       result = await apiService.post(endpoint, params);
     } finally {
-      screenState.setBusy(false);
+      if (!silent) screenState.setBusy(false);
     }
 
     if (result != null) {

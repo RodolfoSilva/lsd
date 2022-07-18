@@ -14,7 +14,7 @@ abstract class LsdWidget {
     return this;
   }
 
-  Widget toWidth(BuildContext context) {
+  Widget toWidget(BuildContext context) {
     this.context = context;
     return build(context);
   }

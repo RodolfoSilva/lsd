@@ -5,8 +5,11 @@ import 'package:lsd_form/lsd_form.dart';
 import 'package:serview/actions/auth_set_token.dart';
 import 'package:serview/actions/get_from_server.dart';
 import 'package:serview/actions/if.dart';
+import 'package:serview/actions/load_more_result.dart';
 import 'package:serview/actions/result.dart';
 import 'package:serview/auth.dart';
+import 'package:serview/components/expanded_widget.dart';
+import 'package:serview/components/list_view_widget.dart';
 import 'package:serview/secure_storage.dart';
 
 import 'actions/dialog.dart';
@@ -44,6 +47,8 @@ void main() async {
         ..register("Column", ColumnWidget.new)
         ..register("Button", ButtonWidget.new)
         ..register("Form", LsdFormWidget.new)
+        ..register("ListView", ListViewWidget.new)
+        ..register("Expanded", ExpandedWidget.new)
         ..register("Input", InputWidget.new)
         ..register("Screen", ScreenWidget.new)
         ..register("Text", TextWidget.new),
@@ -59,6 +64,7 @@ void main() async {
           (lsd) => GetFromServerAction(lsd, apiService),
         )
         ..register("AuthSetToken", (lsd) => AuthSetTokenAction(lsd, auth))
+        ..register("LoadMoreResult", LoadMoreResultAction.new)
         ..register("Result", ResultAction.new)
         ..register("If", IfAction.new)
         ..register("Navigate", NavigateAction.new)
@@ -155,6 +161,6 @@ class MyHomePage extends StatelessWidget {
       "props": {
         "path": "/api/main",
       }
-    }).toWidth(context);
+    }).toWidget(context);
   }
 }

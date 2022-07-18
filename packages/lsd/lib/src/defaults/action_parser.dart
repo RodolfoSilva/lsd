@@ -32,4 +32,9 @@ class DefaultLsdActionParser implements LsdActionParser {
         .create(element[_typeKey], lsd)
         .fromJson(element[_propsKey]);
   }
+
+  @override
+  bool isAction(dynamic element) {
+    return element is Map && element.containsKey(_typeKey);
+  }
 }

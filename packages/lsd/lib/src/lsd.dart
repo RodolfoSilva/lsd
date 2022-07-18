@@ -22,8 +22,12 @@ class Lsd {
   LsdWidget parseWidget(Map<String, dynamic> element) =>
       widgetParser.fromJson(element);
 
+  bool isWidget(dynamic element) => widgetParser.isWidget(element);
+
   LsdAction parseAction(Map<String, dynamic> element) =>
       actionParser.fromJson(element);
+
+  bool isAction(dynamic element) => actionParser.isAction(element);
 
   Widget renderLoading(BuildContext context) => buildLoadingWidget();
 

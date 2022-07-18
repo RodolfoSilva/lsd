@@ -31,7 +31,7 @@ class ScreenWidget extends LsdWidget {
       child: Scaffold(
         appBar: title,
         body: body != null
-            ? Builder(builder: (context) => body!.toWidth(context))
+            ? Builder(builder: (context) => body!.toWidget(context))
             : null,
       ),
     );

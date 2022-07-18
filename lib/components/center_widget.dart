@@ -15,7 +15,7 @@ class CenterWidget extends LsdWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: child.toWidth(context),
+      child: child.toWidget(context),
     );
   }
 }
