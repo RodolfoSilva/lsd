@@ -6,8 +6,10 @@ import 'screen_state.dart';
 
 class ScreenWidget extends LsdWidget {
   late final String? title;
-  late final LsdWidget? body;
   late final LsdAction? onReady;
+  late final LsdWidget? body;
+  late final LsdWidget? leading;
+  late final List<LsdWidget> actions;
 
   ScreenWidget(super.lsd);
 
@@ -15,6 +17,11 @@ class ScreenWidget extends LsdWidget {
   LsdWidget fromJson(Map<String, dynamic> props) {
     title = props["title"];
     body = props["body"] != null ? lsd.parseWidget(props["body"]!) : null;
+    leading =
+        props["leading"] != null ? lsd.parseWidget(props["leading"]!) : null;
+    actions = List<Map<String, dynamic>>.from(props["actions"] ?? [])
+        .map((e) => lsd.parseWidget(e))
+        .toList();
     onReady =
         props["onReady"] != null ? lsd.parseAction(props["onReady"]!) : null;
 
@@ -23,17 +30,13 @@ class ScreenWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = this.title != null ? AppBar(title: Text(this.title!)) : null;
-
     return _ScreenWidget(
       lsd: lsd,
       onReady: onReady,
-      child: Scaffold(
-        appBar: title,
-        body: body != null
-            ? Builder(builder: (context) => body!.toWidget(context))
-            : null,
-      ),
+      actions: actions,
+      leading: leading,
+      body: body,
+      title: title,
     );
   }
 }
@@ -42,13 +45,19 @@ class _ScreenWidget extends StatefulWidget {
   const _ScreenWidget({
     Key? key,
     required this.lsd,
-    required this.child,
+    required this.actions,
+    this.body,
     this.onReady,
+    this.title,
+    this.leading,
   }) : super(key: key);
 
   final Lsd lsd;
-  final Widget child;
+  final List<LsdWidget> actions;
+  final LsdWidget? leading;
+  final LsdWidget? body;
   final LsdAction? onReady;
+  final String? title;
 
   @override
   State<_ScreenWidget> createState() => _ScreenWidgetState();
@@ -67,24 +76,44 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final title = widget.title != null ||
+            widget.leading != null ||
+            widget.actions.isNotEmpty
+        ? AppBar(
+            title: widget.title != null ? Text(widget.title!) : null,
+            leading: widget.leading != null
+                ? widget.leading!.toWidget(context)
+                : null,
+            actions: widget.actions.map((e) => e.toWidget(context)).toList(),
+          )
+        : null;
+
     return ScreenProvider(
       state: _screenState,
       child: ValueListenableBuilder<bool>(
         valueListenable: _screenState.busy,
-        child: widget.child,
+        child: Scaffold(
+          appBar: title,
+          body: widget.body != null
+              ? Builder(builder: widget.body!.toWidget)
+              : null,
+        ),
         builder: (context, busy, child) {
+          if (!busy) return child!;
+
           return Stack(
             children: [
               child!,
-              if (_screenState.isBusy)
-                const Opacity(
-                  opacity: 0.3,
-                  child: ModalBarrier(dismissible: false, color: Colors.black),
+              const Opacity(
+                opacity: 0.3,
+                child: ModalBarrier(
+                  dismissible: false,
+                  color: Colors.black,
                 ),
-              if (_screenState.isBusy)
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
+              ),
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
             ],
           );
         },
