@@ -1,39 +1,155 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# LSD
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+**DON'T USE THIS PROJECT IN PRODUCTION**, I am not responsible if you use it in production, use it at your own risk.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Convert the server UI to Flutter UI
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+import 'package:flutter/material.dart';
+import 'package:lsd/lsd.dart';
+
+void main() async {
+  final lsd = Lsd(
+    widgetParser: DefaultLsdWidgetParser(
+      widgetsShelf: LsdWidgetsShelf()
+        ..register("Container", ContainerWidget.new),
+        ..register("Text", TextWidget.new),
+    ),
+    actionParser: DefaultLsdActionParser(
+      actionsShelf: LsdActionsShelf(),
+    ),
+    buildLoadingWidget: () => const LoadingWidget(),
+    buildErrorWidget: () => Material(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(width: double.infinity),
+            const Text(
+              "Ocorreu um erro",
+              textAlign: TextAlign.center,
+            ),
+            const Text(
+              "Unable to load the information.",
+              textAlign: TextAlign.center,
+            ),
+            const Text(
+              "Check your connection and try again.",
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  runApp(MyApp(lsd: lsd));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key, required this.lsd}) : super(key: key);
+
+  final Lsd lsd;
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(lsd: lsd),
+        '/about': (context) => const MyWidget(),
+      },
+    );
+  }
+}
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter Demo'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text('Native Flutter Screen'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required this.lsd}) : super(key: key);
+
+  final Lsd lsd;
+  @override
+  Widget build(BuildContext context) {
+    return lsd.parseWidget({
+      "component": "Container",
+      "props": {
+        "child": {
+          "component": "Text",
+          "props": {
+            "text": "Hello World",
+          },
+        },
+      },
+    }).toWidget(context);
+  }
+}
+
+class TextWidget extends LsdWidget {
+  late String text;
+
+  TextWidget(super.lsd);
+
+  @override
+  LsdWidget fromJson(Map<String, dynamic> props) {
+    text = props["text"];
+    return super.fromJson(props);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text);
+  }
+}
+
+class ContainerWidget extends LsdWidget {
+  late LsdWidget child;
+  late int padding;
+
+  ContainerWidget(super.lsd);
+
+  @override
+  LsdWidget fromJson(Map<String, dynamic> props) {
+    child = lsd.parseWidget(props["child"]);
+    padding = props["padding"] ?? 0;
+    return super.fromJson(props);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(padding.toDouble()),
+      child: child.toWidget(context),
+    );
+  }
+}
 ```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.

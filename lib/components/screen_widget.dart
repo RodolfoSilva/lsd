@@ -99,21 +99,21 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
               : null,
         ),
         builder: (context, busy, child) {
-          if (!busy) return child!;
-
           return Stack(
             children: [
               child!,
-              const Opacity(
-                opacity: 0.3,
-                child: ModalBarrier(
-                  dismissible: false,
-                  color: Colors.black,
+              if (busy)
+                const Opacity(
+                  opacity: 0.3,
+                  child: ModalBarrier(
+                    dismissible: false,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
+              if (busy)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
             ],
           );
         },
