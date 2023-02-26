@@ -16,7 +16,7 @@ class NavigateAction extends LsdAction {
     replace = props["replace"] == true;
     reset = props["reset"] == true;
 
-    after = props["after"] != null ? lsd.parseAction(props["after"]) : null;
+    after = lsd.parseActionOrNull(props["after"]);
     result = lsd.isAction(props["result"])
         ? lsd.parseAction(Map<String, dynamic>.from(props["result"]))
         : props["result"];

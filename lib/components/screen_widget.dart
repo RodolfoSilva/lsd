@@ -1,8 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 
+import 'parse_icon.dart';
 import 'screen_provider.dart';
 import 'screen_state.dart';
+
+class Tab {
+  final String? title;
+  final String? label;
+  final IconData icon;
+  final LsdWidget? widget;
+  final LsdAction? overrideOnPress;
+
+  Tab({
+    this.title,
+    this.label,
+    required this.icon,
+    this.widget,
+    this.overrideOnPress,
+  });
+
+  factory Tab.fromJson(Lsd lsd, Map<String, dynamic> props) {
+    return Tab(
+      title: props["title"],
+      label: props["label"],
+      icon: parseIcon(props["icon"]),
+      widget: lsd.parseWidgetOrNull(props["content"]),
+      overrideOnPress: lsd.parseActionOrNull(props["override_on_press"]),
+    );
+  }
+}
 
 class ScreenWidget extends LsdWidget {
   late final String? title;
@@ -10,6 +37,7 @@ class ScreenWidget extends LsdWidget {
   late final LsdWidget? body;
   late final LsdWidget? leading;
   late final List<LsdWidget> actions;
+  late final List<Tab> tabs;
 
   ScreenWidget(super.lsd);
 
@@ -22,8 +50,11 @@ class ScreenWidget extends LsdWidget {
     actions = List<Map<String, dynamic>>.from(props["actions"] ?? [])
         .map((e) => lsd.parseWidget(e))
         .toList();
+    tabs = List<Map<String, dynamic>>.from(props["tabs"] ?? [])
+        .map((e) => Tab.fromJson(lsd, e))
+        .toList();
     onReady =
-        props["onReady"] != null ? lsd.parseAction(props["onReady"]!) : null;
+        props["on_ready"] != null ? lsd.parseAction(props["on_ready"]!) : null;
 
     return super.fromJson(props);
   }
@@ -35,6 +66,7 @@ class ScreenWidget extends LsdWidget {
       onReady: onReady,
       actions: actions,
       leading: leading,
+      tabs: tabs,
       body: body,
       title: title,
     );
@@ -49,6 +81,7 @@ class _ScreenWidget extends StatefulWidget {
     this.body,
     this.onReady,
     this.title,
+    required this.tabs,
     this.leading,
   }) : super(key: key);
 
@@ -58,6 +91,7 @@ class _ScreenWidget extends StatefulWidget {
   final LsdWidget? body;
   final LsdAction? onReady;
   final String? title;
+  final List<Tab> tabs;
 
   @override
   State<_ScreenWidget> createState() => _ScreenWidgetState();
@@ -65,6 +99,7 @@ class _ScreenWidget extends StatefulWidget {
 
 class _ScreenWidgetState extends State<_ScreenWidget> {
   late ScreenState _screenState;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -76,11 +111,29 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.title != null ||
+    Widget? body;
+
+    String? titleText = widget.title;
+    Tab? currentTab;
+
+    if (widget.tabs.isEmpty && widget.body != null) {
+      body = widget.body!.toWidget(context);
+    } else if (widget.tabs.isNotEmpty) {
+      currentTab = widget.tabs[_selectedIndex];
+
+      body = Builder(
+        key: ValueKey(_selectedIndex),
+        builder: (context) => currentTab!.widget!.toWidget(context),
+      );
+
+      titleText = currentTab.title;
+    }
+
+    final title = titleText != null ||
             widget.leading != null ||
             widget.actions.isNotEmpty
         ? AppBar(
-            title: widget.title != null ? Text(widget.title!) : null,
+            title: titleText != null ? Text(titleText) : null,
             leading: widget.leading != null
                 ? widget.leading!.toWidget(context)
                 : null,
@@ -94,9 +147,28 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
         valueListenable: _screenState.busy,
         child: Scaffold(
           appBar: title,
-          body: widget.body != null
-              ? Builder(builder: widget.body!.toWidget)
-              : null,
+          body: body,
+          bottomNavigationBar: widget.tabs.isEmpty
+              ? null
+              : BottomNavigationBar(
+                  items: widget.tabs
+                      .map((e) => BottomNavigationBarItem(
+                          icon: Icon(e.icon), label: e.label))
+                      .toList(),
+                  currentIndex: _selectedIndex,
+                  type: BottomNavigationBarType.fixed,
+                  onTap: (int index) async {
+                    final tab = widget.tabs[index];
+                    if (tab.overrideOnPress != null) {
+                      await tab.overrideOnPress?.perform(() => context, null);
+                    }
+
+                    if (tab.widget == null) return;
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                ),
         ),
         builder: (context, busy, child) {
           return Stack(

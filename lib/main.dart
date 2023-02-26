@@ -2,31 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lsd/lsd.dart';
 import 'package:lsd_form/lsd_form.dart';
-import 'package:serview/actions/auth_set_token.dart';
-import 'package:serview/actions/get_from_server.dart';
-import 'package:serview/actions/if.dart';
-import 'package:serview/actions/load_more_result.dart';
-import 'package:serview/actions/result.dart';
-import 'package:serview/auth.dart';
-import 'package:serview/components/expanded_widget.dart';
-import 'package:serview/components/list_view_widget.dart';
-import 'package:serview/secure_storage.dart';
 
+import 'actions/action_result.dart';
+import 'actions/auth_set_token.dart';
 import 'actions/dialog.dart';
+import 'actions/get_from_server.dart';
+import 'actions/if.dart';
+import 'actions/load_more_result.dart';
 import 'actions/navigate.dart';
 import 'actions/required_validation.dart';
 import 'actions/send_to_server.dart';
 import 'api_service.dart';
+import 'auth.dart';
 import 'components/button_widget.dart';
+import 'components/card_widget.dart';
 import 'components/center_widget.dart';
 import 'components/column_widget.dart';
 import 'components/container_widget.dart';
+import 'components/divider_widget.dart';
 import 'components/dynamic_widget.dart';
+import 'components/expanded_widget.dart';
 import 'components/input_widget.dart';
+import 'components/list_view_widget.dart';
 import 'components/lsd_route_controller_provider.dart';
+import 'components/row_widget.dart';
 import 'components/screen_widget.dart';
 import 'components/text_widget.dart';
 import 'loading_widget.dart';
+import 'secure_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +53,9 @@ void main() async {
         ..register("ListView", ListViewWidget.new)
         ..register("Expanded", ExpandedWidget.new)
         ..register("Input", InputWidget.new)
+        ..register("Card", CardWidget.new)
+        ..register("Row", RowWidget.new)
+        ..register("Divider", DividerWidget.new)
         ..register("Screen", ScreenWidget.new)
         ..register("Text", TextWidget.new),
     ),
@@ -64,8 +70,8 @@ void main() async {
           (lsd) => GetFromServerAction(lsd, apiService),
         )
         ..register("AuthSetToken", (lsd) => AuthSetTokenAction(lsd, auth))
-        ..register("LoadMoreResult", LoadMoreResultAction.new)
-        ..register("Result", ResultAction.new)
+        ..register("LoadMoreResult", LoadMoreActionResult.new)
+        ..register("Result", ActionResult.new)
         ..register("If", IfAction.new)
         ..register("Navigate", NavigateAction.new)
         ..register("ShowDialog", ShowDialogAction.new)
@@ -73,7 +79,7 @@ void main() async {
         ..register("SubmitForm", LsdSubmitFormAction.new),
     ),
     buildLoadingWidget: () => const LoadingWidget(),
-    buildErrorWidget: () => Material(
+    buildErrorWidget: (error) => Material(
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

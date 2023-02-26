@@ -17,7 +17,7 @@ class ButtonWidget extends LsdWidget {
 
     child = lsd.parseWidget(props["child"]);
     onPress =
-        props["onPress"] != null ? lsd.parseAction(props["onPress"]) : null;
+        props["on_press"] != null ? lsd.parseAction(props["on_press"]) : null;
     return super.fromJson(props);
   }
 

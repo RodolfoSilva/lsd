@@ -16,7 +16,7 @@ class InputWidget extends LsdWidget {
     name = props["name"];
     obscure = props["obscure"] ?? false;
     label = props["label"] != null ? lsd.parseWidget(props["label"]) : null;
-    initialValue = props["initialValue"];
+    initialValue = props["initial_value"];
     validations = List<Map<String, dynamic>>.from(props["validations"] ?? [])
         .map((e) => lsd.parseAction(e))
         .toList();

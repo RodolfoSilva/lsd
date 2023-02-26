@@ -1,7 +1,7 @@
 import 'package:lsd/lsd.dart';
 
-class LoadMoreResultAction extends LsdAction {
-  LoadMoreResultAction(super.lsd);
+class LoadMoreActionResult extends LsdAction {
+  LoadMoreActionResult(super.lsd);
 
   late final Map<String, dynamic> result;
 
@@ -11,8 +11,8 @@ class LoadMoreResultAction extends LsdAction {
       "items": List<Map<String, dynamic>>.from(props["items"])
           .map((e) => lsd.parseWidget(e))
           .toList(),
-      "onLoadMore": props["onLoadMore"] != null
-          ? lsd.parseAction(props["onLoadMore"])
+      "on_load_more": props["on_load_more"] != null
+          ? lsd.parseAction(props["on_load_more"])
           : null,
     };
 

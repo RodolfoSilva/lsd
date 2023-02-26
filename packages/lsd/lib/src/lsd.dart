@@ -3,6 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'action/action.dart';
 import 'widget/widget.dart';
 
+typedef ErrorWidgetBuilder = Widget Function(dynamic error);
+typedef LoadingWidgetBuilder = Widget Function();
+
 class Lsd {
   Lsd({
     required this.widgetParser,
@@ -16,8 +19,8 @@ class Lsd {
 
   final LsdWidgetParser widgetParser;
   final LsdActionParser actionParser;
-  final Widget Function() buildLoadingWidget;
-  final Widget Function() buildErrorWidget;
+  final LoadingWidgetBuilder buildLoadingWidget;
+  final ErrorWidgetBuilder buildErrorWidget;
 
   LsdWidget parseWidget(Map<String, dynamic> element) =>
       widgetParser.fromJson(element);
@@ -41,5 +44,6 @@ class Lsd {
 
   Widget renderLoading(BuildContext context) => buildLoadingWidget();
 
-  Widget renderError(BuildContext context, dynamic error) => buildErrorWidget();
+  Widget renderError(BuildContext context, dynamic error) =>
+      buildErrorWidget(error);
 }

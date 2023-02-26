@@ -35,12 +35,17 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   dio: ^4.0.6
+  lsd: ^0.0.2
+  lsd_form: ^0.0.2
+  flutter_feather_icons: ^2.0.0+1
+  flutter_secure_storage: ^5.0.2
+  shared_preferences: ^2.0.15
+
+dependency_overrides:
   lsd:
     path: ./packages/lsd
   lsd_form:
     path: ./packages/lsd_form
-  flutter_secure_storage: ^5.0.2
-  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

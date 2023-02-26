@@ -1,7 +1,7 @@
 import 'package:lsd/lsd.dart';
 
-class ResultAction extends LsdAction {
-  ResultAction(super.lsd);
+class ActionResult extends LsdAction {
+  ActionResult(super.lsd);
 
   late final dynamic result;
 

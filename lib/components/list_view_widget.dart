@@ -16,8 +16,8 @@ class ListViewWidget extends LsdWidget {
         .map((e) => lsd.parseWidget(e))
         .toList();
 
-    onLoadMore = props["onLoadMore"] != null
-        ? lsd.parseAction(props["onLoadMore"])
+    onLoadMore = props["on_load_more"] != null
+        ? lsd.parseAction(props["on_load_more"])
         : null;
     return super.fromJson(props);
   }
@@ -84,8 +84,8 @@ class _ListViewWidgetState extends State<_ListViewWidget> {
         return;
       }
 
-      if (result.containsKey("onLoadMore")) {
-        _onLoadMore = result["onLoadMore"];
+      if (result.containsKey("on_load_more")) {
+        _onLoadMore = result["on_load_more"];
       }
 
       if (result.containsKey("items")) {
