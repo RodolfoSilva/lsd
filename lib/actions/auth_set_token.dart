@@ -1,11 +1,11 @@
 import 'package:lsd/lsd.dart';
+import 'package:provider/provider.dart';
 
-import '../auth.dart';
+import '../services/auth_service.dart';
 
 class AuthSetTokenAction extends LsdAction {
-  AuthSetTokenAction(super.lsd, this.auth);
+  AuthSetTokenAction(super.lsd);
 
-  final Auth auth;
   late String? token;
   late LsdAction? after;
 
@@ -18,10 +18,11 @@ class AuthSetTokenAction extends LsdAction {
 
   @override
   Future<dynamic> perform(GetContext getContext, dynamic params) async {
+    final authService = getContext().read<AuthService>();
     if (token != null) {
-      await auth.setToken(token!);
+      await authService.setToken(token!);
     } else {
-      await auth.removeToken();
+      await authService.removeToken();
     }
 
     if (after != null) {

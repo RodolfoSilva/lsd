@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'auth.dart';
+import 'auth_service.dart';
+
+typedef JSON = Map<String, dynamic>;
 
 class ApiService {
   ApiService(this.auth);
 
-  final Auth auth;
+  final AuthService auth;
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -29,7 +31,7 @@ class ApiService {
     return null;
   }
 
-  Future<Map<String, dynamic>?> get(String resource) async {
+  Future<JSON?> get(String resource) async {
     final options = await _getRequestOptions();
     final response = await _dio.get(resource, options: options);
 
@@ -37,11 +39,10 @@ class ApiService {
       return null;
     }
 
-    return Map<String, dynamic>.from(response.data);
+    return JSON.from(response.data);
   }
 
-  Future<Map<String, dynamic>?> post(
-      String resource, Map<String, dynamic> data) async {
+  Future<JSON?> post(String resource, JSON data) async {
     final response = await _dio.post(
       resource,
       data: data,
@@ -52,6 +53,6 @@ class ApiService {
       return null;
     }
 
-    return Map<String, dynamic>.from(response.data);
+    return JSON.from(response.data);
   }
 }

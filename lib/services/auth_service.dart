@@ -1,7 +1,7 @@
-import 'storage.dart';
+import '../storage.dart';
 
-class Auth {
-  Auth(this.storage);
+class AuthService {
+  AuthService(this.storage);
 
   final Storage storage;
   final String _tokenKey = "token";

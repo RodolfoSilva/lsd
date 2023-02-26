@@ -1,18 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
+import 'package:provider/provider.dart';
 
-import '../api_service.dart';
-import 'lsd_route_controller.dart';
-import 'lsd_route_controller_provider.dart';
+import '../lsd_page_controller.dart';
+import '../services/api_service.dart';
 
 class DynamicWidget extends LsdWidget {
   late String path;
-  final LsdRouteController _routeController = LsdRouteController();
-  final ApiService apiService;
 
-  DynamicWidget(super.lsd, this.apiService);
+  DynamicWidget(super.lsd);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
@@ -22,78 +18,27 @@ class DynamicWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LsdRouteControllerProvider(
-      controller: _routeController,
-      child: _DynamicWidget(
-        apiService: apiService,
+    return ChangeNotifierProxyProvider0<LsdPageController>(
+      create: (context) => LsdPageController(
         path: path,
-        lsd: lsd,
+        apiService: context.read<ApiService>(),
       ),
-    );
-  }
-}
+      update: (context, pageController) => pageController!,
+      builder: (context, child) {
+        final lsd = Provider.of<Lsd>(context);
+        final controller = Provider.of<LsdPageController>(context);
 
-class _DynamicWidget extends StatefulWidget {
-  const _DynamicWidget({
-    Key? key,
-    required this.path,
-    required this.apiService,
-    required this.lsd,
-  }) : super(key: key);
-
-  final String path;
-  final Lsd lsd;
-  final ApiService apiService;
-
-  @override
-  State<_DynamicWidget> createState() => _DynamicWidgetState();
-}
-
-class _DynamicWidgetState extends State<_DynamicWidget> {
-  Future<Map<String, dynamic>?>? _widget;
-
-  StreamSubscription<LsdRouteEvent>? _routeSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _widget = widget.apiService.get(widget.path);
-
-    Future.microtask(() {
-      _routeSubscription =
-          LsdRouteControllerProvider.of(context).stream.listen((event) {
-        if (event is LsdRouteEventLoad) {
-          setState(() {
-            _widget = widget.apiService.get(widget.path);
-          });
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _routeSubscription?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: _widget,
-      builder: (context, data) {
-        if (data.connectionState != ConnectionState.done) {
-          return widget.lsd.renderLoading(context);
+        if (controller.isLoading) {
+          return lsd.renderLoading(context);
         }
 
-        if (data.hasError) {
-          return widget.lsd.renderError(context, data.error);
+        if (controller.hasError) {
+          return lsd.renderLoading(context);
         }
 
         return LsdSafeWidgetBuilder(
-          lsd: widget.lsd,
-          element: data.data!,
+          lsd: lsd,
+          element: controller.body!,
         );
       },
     );

@@ -1,12 +1,11 @@
 import 'package:lsd/lsd.dart';
+import 'package:provider/provider.dart';
 
-import '../api_service.dart';
-import '../components/screen_provider.dart';
+import '../lsd_page_controller.dart';
 
 class SendToServerAction extends LsdAction {
-  SendToServerAction(super.lsd, this.apiService);
+  SendToServerAction(super.lsd);
 
-  final ApiService apiService;
   late String endpoint;
   late final bool silent;
 
@@ -20,14 +19,9 @@ class SendToServerAction extends LsdAction {
 
   @override
   Future<dynamic> perform(GetContext getContext, dynamic params) async {
-    final screenState = ScreenProvider.of(getContext());
-    if (!silent) screenState.setBusy(true);
-    Map<String, dynamic>? result;
-    try {
-      result = await apiService.post(endpoint, params);
-    } finally {
-      if (!silent) screenState.setBusy(false);
-    }
+    Map<String, dynamic>? result = await getContext()
+        .read<LsdPageController>()
+        .sendToServer(endpoint, params);
 
     if (result != null) {
       return lsd

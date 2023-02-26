@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
+import 'package:provider/provider.dart';
 
+import '../lsd_page_controller.dart';
 import 'parse_icon.dart';
-import 'screen_provider.dart';
-import 'screen_state.dart';
 
 class Tab {
   final String? title;
@@ -98,14 +98,11 @@ class _ScreenWidget extends StatefulWidget {
 }
 
 class _ScreenWidgetState extends State<_ScreenWidget> {
-  late ScreenState _screenState;
   int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-
-    _screenState = ScreenState();
     Future.microtask(() => widget.onReady?.perform(() => context, null));
   }
 
@@ -141,11 +138,11 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
           )
         : null;
 
-    return ScreenProvider(
-      state: _screenState,
-      child: ValueListenableBuilder<bool>(
-        valueListenable: _screenState.busy,
-        child: Scaffold(
+    final controller = context.watch<LsdPageController>();
+
+    return Stack(
+      children: [
+        Scaffold(
           appBar: title,
           body: body,
           bottomNavigationBar: widget.tabs.isEmpty
@@ -170,26 +167,16 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
                   },
                 ),
         ),
-        builder: (context, busy, child) {
-          return Stack(
-            children: [
-              child!,
-              if (busy)
-                const Opacity(
-                  opacity: 0.3,
-                  child: ModalBarrier(
-                    dismissible: false,
-                    color: Colors.black,
-                  ),
-                ),
-              if (busy)
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
-            ],
-          );
-        },
-      ),
+        if (controller.isBusy)
+          const Opacity(
+            opacity: 0.3,
+            child: ModalBarrier(
+              dismissible: false,
+              color: Colors.black,
+            ),
+          ),
+        if (controller.isBusy) const Center(child: CircularProgressIndicator()),
+      ],
     );
   }
 }
