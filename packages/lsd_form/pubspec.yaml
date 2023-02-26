@@ -1,6 +1,6 @@
 name: lsd_form
 description: LSD Form - Light Server Driver Form Client
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/RodolfoSilva/lsd
 
 environment:
@@ -8,7 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  lsd: ^0.0.1
+  lsd: ^0.0.2
   flutter:
     sdk: flutter
 
