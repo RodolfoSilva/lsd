@@ -11,6 +11,7 @@ import '../actions/get_from_server.dart';
 import '../actions/if.dart';
 import '../actions/load_more_result.dart';
 import '../actions/navigate.dart';
+import '../actions/refresh_page.dart';
 import '../actions/required_validation.dart';
 import '../actions/send_to_server.dart';
 import '../components/button_widget.dart';
@@ -50,6 +51,7 @@ final lsdProviders = [
           actionsShelf: LsdActionsShelf()
             ..register("SendToServer", SendToServerAction.new)
             ..register("GetFromServer", GetFromServerAction.new)
+            ..register("RefreshPage", RefreshPageAction.new)
             ..register("AuthSetToken", AuthSetTokenAction.new)
             ..register("LoadMoreResult", LoadMoreActionResult.new)
             ..register("Result", ActionResult.new)
