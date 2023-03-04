@@ -25,11 +25,14 @@ class ShowDialogAction extends LsdAction {
     return showDialog<dynamic>(
       context: getContext(),
       barrierDismissible: false,
-      builder: (BuildContext context) => AlertDialog(
-        title: title.toWidget(context),
-        content: content.toWidget(context),
-        actions: actions.map((e) => e.toWidget(context)).toList(),
-      ),
+      builder: (dialogContext) {
+        final context = getContext();
+        return AlertDialog(
+          title: title.toWidget(context),
+          content: content.toWidget(context),
+          actions: actions.map((e) => e.toWidget(context)).toList(),
+        );
+      },
     );
   }
 }
