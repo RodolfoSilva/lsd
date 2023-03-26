@@ -8,18 +8,15 @@ class NavigateAction extends LsdAction {
   late bool replace;
   late dynamic result;
   late dynamic destination;
-  late LsdAction? after;
+  late LsdAction? callback;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
     final destination = props["destination"];
     replace = props["replace"] == true;
     reset = props["reset"] == true;
-
-    after = lsd.parseActionOrNull(props["after"]);
-    result = lsd.isAction(props["result"])
-        ? lsd.parseAction(Map<String, dynamic>.from(props["result"]))
-        : props["result"];
+    result = props["result"];
+    callback = lsd.parseActionOrNull(props["callback"]);
 
     if (destination is Map) {
       final screen = Map<String, dynamic>.from(destination);
@@ -31,8 +28,8 @@ class NavigateAction extends LsdAction {
     return super.fromJson(props);
   }
 
-  _performLater(GetContext getContext, [dynamic params]) {
-    Future.microtask(() => after?.perform(getContext, params));
+  _performCallback(GetContext getContext, [dynamic params]) {
+    Future.microtask(() => callback?.perform(getContext, params));
   }
 
   @override
@@ -41,34 +38,57 @@ class NavigateAction extends LsdAction {
       return null;
     }
 
-    final navigator = Navigator.of(getContext());
-
-    if (destination is String && "../" == destination) {
-      dynamic result = this.result is LsdAction
-          ? await this.result.perform(getContext, params)
-          : this.result;
-
+    if (_isPopRoute(destination)) {
+      final navigator = Navigator.of(getContext());
       navigator.pop(result);
-
-      _performLater(getContext, result);
+      _performCallback(getContext, params);
       return null;
     }
 
-    if (destination is String &&
-        (destination as String).toLowerCase().startsWith("route://")) {
-      final path =
-          (destination as String).replaceFirst(RegExp(r'route:\/\/'), '');
-
-      return navigator.pushNamed(path);
+    if (_isNamedRoute(destination)) {
+      return _pushNamed(getContext(), destination);
     }
 
     int executionCount = 0;
-    final pageRoute = MaterialPageRoute(
-      builder: (context) {
-        executionCount++ == 0 ? _performLater(getContext, params) : null;
-        return (destination as LsdWidget).toWidget(context);
-      },
+    return _pushDynamic(
+      getContext(),
+      MaterialPageRoute(
+        builder: (context) {
+          executionCount++ == 0 ? _performCallback(getContext, params) : null;
+          return (destination as LsdWidget).toWidget(context);
+        },
+      ),
     );
+  }
+
+  bool _isPopRoute(dynamic route) {
+    return route is String && route == "../";
+  }
+
+  bool _isNamedRoute(dynamic route) {
+    return route is String && route.toLowerCase().startsWith("route://");
+  }
+
+  Future<dynamic> _pushNamed(BuildContext context, String destination) {
+    final navigator = Navigator.of(context);
+
+    final path = destination.replaceFirst(RegExp(r'route:\/\/'), '');
+
+    if (reset) {
+      return navigator.pushNamedAndRemoveUntil(
+        path,
+        (Route<dynamic> route) => false,
+      );
+    }
+
+    if (replace) {
+      return navigator.pushReplacementNamed(path);
+    }
+    return navigator.pushNamed(path);
+  }
+
+  Future<dynamic> _pushDynamic(BuildContext context, Route pageRoute) {
+    final navigator = Navigator.of(context);
 
     if (reset) {
       return navigator.pushAndRemoveUntil(
