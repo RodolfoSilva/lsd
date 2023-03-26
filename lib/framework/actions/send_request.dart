@@ -2,16 +2,17 @@ import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
 import '../lsd_page_controller.dart';
+import '../models/request.dart';
 
-class SendToServerAction extends LsdAction {
-  SendToServerAction(super.lsd);
+class SendRequestAction extends LsdAction {
+  SendRequestAction(super.lsd);
 
-  late String endpoint;
+  late final Request request;
   late final bool silent;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
-    endpoint = props["endpoint"];
+    request = Request.fromJson(Map<String, dynamic>.from(props["request"]));
     silent = props["silent"] ?? false;
 
     return super.fromJson(props);
@@ -21,12 +22,12 @@ class SendToServerAction extends LsdAction {
   Future<dynamic> perform(GetContext getContext, dynamic params) async {
     Map<String, dynamic>? result = await getContext()
         .read<LsdPageController>()
-        .sendToServer(endpoint, params);
+        .sendRequestToServer(request.copyWith(data: params));
 
     if (result != null) {
       return lsd
-          .parseAction(Map<String, dynamic>.from(result))
-          .perform(getContext, params);
+          .parseActionOrNull(Map<String, dynamic>.from(result))
+          ?.perform(getContext, params);
     }
     return result;
   }

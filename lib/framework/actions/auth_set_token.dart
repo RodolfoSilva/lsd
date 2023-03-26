@@ -7,12 +7,13 @@ class AuthSetTokenAction extends LsdAction {
   AuthSetTokenAction(super.lsd);
 
   late String? token;
-  late LsdAction? after;
+  late LsdAction? callback;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
     token = props["token"];
-    after = props["after"] != null ? lsd.parseAction(props["after"]) : null;
+    callback =
+        props["callback"] != null ? lsd.parseAction(props["callback"]) : null;
     return super.fromJson(props);
   }
 
@@ -25,8 +26,8 @@ class AuthSetTokenAction extends LsdAction {
       await authService.removeToken();
     }
 
-    if (after != null) {
-      return after!.perform(getContext, params);
+    if (callback != null) {
+      return callback!.perform(getContext, params);
     }
 
     return null;

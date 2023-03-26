@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
 
+import 'models/method.dart';
+import 'models/request.dart';
 import 'services/api_service.dart';
+
+enum MethodEnum {
+  get("get"),
+  post("post"),
+  put("put"),
+  delete("delete");
+
+  final String _value;
+  const MethodEnum(this._value);
+
+  static MethodEnum fromString(String method) {
+    switch (method) {
+      case "get":
+        return MethodEnum.get;
+      case "post":
+        return MethodEnum.post;
+      case "put":
+        return MethodEnum.put;
+      case "delete":
+        return MethodEnum.delete;
+      default:
+        return MethodEnum.post;
+    }
+  }
+
+  @override
+  String toString() => _value;
+}
 
 class LsdPageController with ChangeNotifier {
   LsdPageController({required this.path, required this.apiService}) {
@@ -60,28 +90,39 @@ class LsdPageController with ChangeNotifier {
     _fetchPath();
   }
 
-  Future<Map<String, dynamic>?> getFromServer(
-    String endpoint, {
-    bool silent = false,
-  }) async {
-    if (!silent) setBusy(true);
+  Future<Map<String, dynamic>?> sendRequestToServer(Request request) async {
+    setBusy(true);
     try {
-      return await apiService.get(endpoint);
+      switch (request.method) {
+        case Method.get:
+          return await apiService.get(
+            request.url,
+            queryParameters: request.queryParameters,
+            headers: request.headers,
+          );
+        case Method.delete:
+          return await apiService.delete(
+            request.url,
+            queryParameters: request.queryParameters,
+            headers: request.headers,
+          );
+        case Method.post:
+          return await apiService.post(
+            request.url,
+            request.data,
+            queryParameters: request.queryParameters,
+            headers: request.headers,
+          );
+        case Method.put:
+          return await apiService.put(
+            request.url,
+            request.data,
+            queryParameters: request.queryParameters,
+            headers: request.headers,
+          );
+      }
     } finally {
-      if (!silent) setBusy(false);
-    }
-  }
-
-  Future<Map<String, dynamic>?> sendToServer(
-    String endpoint,
-    JSON params, {
-    bool silent = false,
-  }) async {
-    if (!silent) setBusy(true);
-    try {
-      return await apiService.post(endpoint, params);
-    } finally {
-      if (!silent) setBusy(false);
+      setBusy(false);
     }
   }
 }

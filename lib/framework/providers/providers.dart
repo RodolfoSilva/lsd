@@ -6,13 +6,12 @@ import 'package:provider/provider.dart';
 import '../actions/action_result.dart';
 import '../actions/auth_set_token.dart';
 import '../actions/dialog.dart';
-import '../actions/get_from_server.dart';
 import '../actions/if.dart';
 import '../actions/load_more_result.dart';
 import '../actions/navigate.dart';
 import '../actions/refresh_page.dart';
 import '../actions/required_validation.dart';
-import '../actions/send_to_server.dart';
+import '../actions/send_request.dart';
 import '../components/button_widget.dart';
 import '../components/card_widget.dart';
 import '../components/center_widget.dart';
@@ -46,8 +45,7 @@ final lsdProviders = [
   ProxyProvider2<ApiService, AuthService, Lsd>(
     update: (context, apiService, authService, previous) {
       final actionsShelf = LsdActionsShelf()
-        ..register("SendToServer", SendToServerAction.new)
-        ..register("GetFromServer", GetFromServerAction.new)
+        ..register("SendRequest", SendRequestAction.new)
         ..register("RefreshPage", RefreshPageAction.new)
         ..register("AuthSetToken", AuthSetTokenAction.new)
         ..register("LoadMoreResult", LoadMoreActionResult.new)

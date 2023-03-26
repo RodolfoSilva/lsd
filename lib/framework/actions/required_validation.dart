@@ -4,7 +4,7 @@ import 'package:lsd_form/lsd_form.dart';
 class RequiredValidationAction extends LsdAction {
   RequiredValidationAction(super.lsd);
 
-  late String message;
+  late final String message;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {

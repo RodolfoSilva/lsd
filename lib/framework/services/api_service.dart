@@ -20,20 +20,31 @@ class ApiService {
     ),
   )..interceptors.add(LogInterceptor(responseBody: true));
 
-  Future<Options?> _getRequestOptions() async {
+  Future<Options?> _getRequestOptions({Map<String, dynamic>? headers}) async {
     final token = await auth.getToken();
 
     if (token != null) {
-      return Options(headers: {
+      Map<String, dynamic> newHeaders = {
         'Authorization': token,
-      });
+      }..addAll(headers ?? {});
+
+      return Options(headers: newHeaders);
     }
-    return null;
+
+    return Options(headers: headers);
   }
 
-  Future<JSON?> get(String resource) async {
-    final options = await _getRequestOptions();
-    final response = await _dio.get(resource, options: options);
+  Future<JSON?> get(
+    String resource, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  }) async {
+    final options = await _getRequestOptions(headers: headers);
+    final response = await _dio.get(
+      resource,
+      options: options,
+      queryParameters: queryParameters,
+    );
 
     if (response.data == null) {
       return null;
@@ -42,11 +53,58 @@ class ApiService {
     return JSON.from(response.data);
   }
 
-  Future<JSON?> post(String resource, JSON data) async {
+  Future<JSON?> delete(
+    String resource, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  }) async {
+    final options = await _getRequestOptions(headers: headers);
+    final response = await _dio.delete(
+      resource,
+      options: options,
+      queryParameters: queryParameters,
+    );
+
+    if (response.data == null) {
+      return null;
+    }
+
+    return JSON.from(response.data);
+  }
+
+  Future<JSON?> post(
+    String resource,
+    JSON? data, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  }) async {
+    final options = await _getRequestOptions(headers: headers);
     final response = await _dio.post(
       resource,
       data: data,
-      options: await _getRequestOptions(),
+      options: options,
+      queryParameters: queryParameters,
+    );
+
+    if (response.data == null) {
+      return null;
+    }
+
+    return JSON.from(response.data);
+  }
+
+  Future<JSON?> put(
+    String resource,
+    JSON? data, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  }) async {
+    final options = await _getRequestOptions(headers: headers);
+    final response = await _dio.put(
+      resource,
+      data: data,
+      options: options,
+      queryParameters: queryParameters,
     );
 
     if (response.data == null) {
