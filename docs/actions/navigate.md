@@ -88,3 +88,7 @@ Navigate back and refresh the screen
   }
 }
 ```
+
+You could pass any other action to be executed after this action complete the main job, passing the other action in `callback`.
+
+Note, the callback action will not block the main workflow.
