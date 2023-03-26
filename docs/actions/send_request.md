@@ -16,7 +16,8 @@ Send a `GET` request to the server.
       "query_parameters": {
         "organization_id": "43212"
       }
-    }
+    },
+    "callback": null
   }
 }
 ```
@@ -37,7 +38,8 @@ Send a `DELETE` request to the server.
       "query_parameters": {
         "organization_id": "43212"
       }
-    }
+    },
+    "callback": null
   }
 }
 ```
@@ -62,7 +64,8 @@ Send a `POST` request to the server.
         "name": "Jone Doe",
         "age": 22
       }
-    }
+    },
+    "callback": null
   }
 }
 ```
@@ -87,7 +90,8 @@ Send a `PUT` request to the server.
         "name": "Jone Doe",
         "age": 22
       }
-    }
+    },
+    "callback": null
   }
 }
 ```

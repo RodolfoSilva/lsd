@@ -8,12 +8,13 @@ class SendRequestAction extends LsdAction {
   SendRequestAction(super.lsd);
 
   late final Request request;
-  late final bool silent;
+  late LsdAction? callback;
 
   @override
   LsdAction fromJson(Map<String, dynamic> props) {
     request = Request.fromJson(Map<String, dynamic>.from(props["request"]));
-    silent = props["silent"] ?? false;
+    callback =
+        props["callback"] != null ? lsd.parseAction(props["callback"]) : null;
 
     return super.fromJson(props);
   }
@@ -24,11 +25,16 @@ class SendRequestAction extends LsdAction {
         .read<LsdPageController>()
         .sendRequestToServer(request.copyWith(data: params));
 
+    if (callback != null) {
+      return callback!.perform(getContext, params);
+    }
+
     if (result != null) {
       return lsd
           .parseActionOrNull(Map<String, dynamic>.from(result))
           ?.perform(getContext, params);
     }
-    return result;
+
+    return null;
   }
 }
