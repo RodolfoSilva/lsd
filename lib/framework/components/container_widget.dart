@@ -28,9 +28,11 @@ class ContainerWidget extends LsdWidget {
     );
 
     if (onPress != null) {
-      return InkWell(
-        onTap: () => onPress?.perform(getContext, null),
-        child: Ink(child: container),
+      return Material(
+        child: InkWell(
+          onTap: () => onPress?.perform(getContext, null),
+          child: Ink(child: container),
+        ),
       );
     }
 
