@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/providers.dart';
+import 'framework/providers/providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

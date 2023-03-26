@@ -33,7 +33,7 @@ class DynamicWidget extends LsdWidget {
         }
 
         if (controller.hasError) {
-          return lsd.renderLoading(context);
+          return lsd.renderError(context, controller.error);
         }
 
         return LsdSafeWidgetBuilder(
