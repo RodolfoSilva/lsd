@@ -26,6 +26,7 @@ import '../components/input_widget.dart';
 import '../components/list_view_widget.dart';
 import '../components/row_widget.dart';
 import '../components/screen_widget.dart';
+import '../components/sized_box_widget.dart';
 import '../components/text_widget.dart';
 import '../controllers/busy_controller.dart';
 import '../secure_storage.dart';
@@ -80,6 +81,7 @@ final lsdProviders = [
         ..register("Form", LsdFormWidget.new)
         ..register("ListView", ListViewWidget.new)
         ..register("Expanded", ExpandedWidget.new)
+        ..register("SizedBox", SizedBoxWidget.new)
         ..register("Input", InputWidget.new)
         ..register("Card", CardWidget.new)
         ..register("Row", RowWidget.new)
