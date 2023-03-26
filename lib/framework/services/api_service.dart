@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 import 'auth_service.dart';
@@ -7,21 +5,18 @@ import 'auth_service.dart';
 typedef JSON = Map<String, dynamic>;
 
 class ApiService {
-  ApiService(this.auth);
+  ApiService({
+    required AuthService auth,
+    required Dio dio,
+  })  : _dio = dio,
+        _auth = auth;
 
-  final AuthService auth;
+  final AuthService _auth;
 
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl:
-          Platform.isAndroid ? 'http://10.0.2.2:4000' : 'http://localhost:4000',
-      connectTimeout: 10000,
-      receiveTimeout: 60000,
-    ),
-  )..interceptors.add(LogInterceptor(responseBody: true));
+  final Dio _dio;
 
   Future<Options?> _getRequestOptions({Map<String, dynamic>? headers}) async {
-    final token = await auth.getToken();
+    final token = await _auth.getToken();
 
     if (token != null) {
       Map<String, dynamic> newHeaders = {

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lsd/lsd.dart';
 import 'package:lsd_form/lsd_form.dart';
@@ -32,14 +35,28 @@ import '../widgets/error_widget.dart';
 import '../widgets/loading_screen_widget.dart';
 
 final lsdProviders = [
+  Provider<Dio>(
+    create: (context) => Dio(
+      BaseOptions(
+        baseUrl: Platform.isAndroid
+            ? 'http://10.0.2.2:4000'
+            : 'http://localhost:4000',
+        connectTimeout: 10000,
+        receiveTimeout: 60000,
+      ),
+    ),
+  ),
   Provider<Storage>(
     create: (context) => const SecureStorage(FlutterSecureStorage()),
   ),
   ProxyProvider<Storage, AuthService>(
     update: (context, storage, previous) => AuthService(storage),
   ),
-  ProxyProvider<AuthService, ApiService>(
-    update: (context, auth, previous) => ApiService(auth),
+  ProxyProvider2<AuthService, Dio, ApiService>(
+    update: (context, auth, dio, previous) => ApiService(
+      auth: auth,
+      dio: dio,
+    ),
   ),
   ProxyProvider2<ApiService, AuthService, Lsd>(
     update: (context, apiService, authService, previous) {
