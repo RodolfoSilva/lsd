@@ -1,51 +1,23 @@
 import 'package:dio/dio.dart';
 
-import 'auth_service.dart';
-
 typedef JSON = Map<String, dynamic>;
 
 class ApiService {
-  ApiService({
-    required AuthService auth,
-    required Dio dio,
-  })  : _dio = dio,
-        _auth = auth;
-
-  final AuthService _auth;
+  ApiService({required Dio dio}) : _dio = dio;
 
   final Dio _dio;
-
-  Future<Options?> _getRequestOptions({Map<String, dynamic>? headers}) async {
-    final token = await _auth.getToken();
-
-    if (token != null) {
-      Map<String, dynamic> newHeaders = {
-        'Authorization': token,
-      }..addAll(headers ?? {});
-
-      return Options(headers: newHeaders);
-    }
-
-    return Options(headers: headers);
-  }
-
   Future<JSON?> get(
     String resource, {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
   }) async {
-    final options = await _getRequestOptions(headers: headers);
     final response = await _dio.get(
       resource,
-      options: options,
+      options: Options(headers: headers),
       queryParameters: queryParameters,
     );
 
-    if (response.data == null) {
-      return null;
-    }
-
-    return JSON.from(response.data);
+    return _parseResponse(response);
   }
 
   Future<JSON?> delete(
@@ -53,18 +25,13 @@ class ApiService {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
   }) async {
-    final options = await _getRequestOptions(headers: headers);
     final response = await _dio.delete(
       resource,
-      options: options,
+      options: Options(headers: headers),
       queryParameters: queryParameters,
     );
 
-    if (response.data == null) {
-      return null;
-    }
-
-    return JSON.from(response.data);
+    return _parseResponse(response);
   }
 
   Future<JSON?> post(
@@ -73,19 +40,14 @@ class ApiService {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
   }) async {
-    final options = await _getRequestOptions(headers: headers);
     final response = await _dio.post(
       resource,
       data: data,
-      options: options,
+      options: Options(headers: headers),
       queryParameters: queryParameters,
     );
 
-    if (response.data == null) {
-      return null;
-    }
-
-    return JSON.from(response.data);
+    return _parseResponse(response);
   }
 
   Future<JSON?> put(
@@ -94,14 +56,17 @@ class ApiService {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
   }) async {
-    final options = await _getRequestOptions(headers: headers);
     final response = await _dio.put(
       resource,
       data: data,
-      options: options,
+      options: Options(headers: headers),
       queryParameters: queryParameters,
     );
 
+    return _parseResponse(response);
+  }
+
+  Future<JSON?> _parseResponse(Response response) async {
     if (response.data == null) {
       return null;
     }

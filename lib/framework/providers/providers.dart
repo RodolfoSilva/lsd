@@ -29,14 +29,21 @@ import '../components/screen_widget.dart';
 import '../components/text_widget.dart';
 import '../secure_storage.dart';
 import '../services/api_service.dart';
+import '../services/auth_interceptor.dart';
 import '../services/auth_service.dart';
 import '../storage.dart';
 import '../widgets/error_widget.dart';
 import '../widgets/loading_screen_widget.dart';
 
 final lsdProviders = [
-  Provider<Dio>(
-    create: (context) => Dio(
+  Provider<Storage>(
+    create: (context) => const SecureStorage(FlutterSecureStorage()),
+  ),
+  ProxyProvider<Storage, AuthService>(
+    update: (context, storage, previous) => AuthService(storage),
+  ),
+  ProxyProvider<AuthService, Dio>(
+    update: (context, authService, previous) => Dio(
       BaseOptions(
         baseUrl: Platform.isAndroid
             ? 'http://10.0.2.2:4000'
@@ -44,19 +51,10 @@ final lsdProviders = [
         connectTimeout: 10000,
         receiveTimeout: 60000,
       ),
-    ),
+    )..interceptors.add(AuthInterceptor(authService: authService)),
   ),
-  Provider<Storage>(
-    create: (context) => const SecureStorage(FlutterSecureStorage()),
-  ),
-  ProxyProvider<Storage, AuthService>(
-    update: (context, storage, previous) => AuthService(storage),
-  ),
-  ProxyProvider2<AuthService, Dio, ApiService>(
-    update: (context, auth, dio, previous) => ApiService(
-      auth: auth,
-      dio: dio,
-    ),
+  ProxyProvider<Dio, ApiService>(
+    update: (context, dio, previous) => ApiService(dio: dio),
   ),
   ProxyProvider2<ApiService, AuthService, Lsd>(
     update: (context, apiService, authService, previous) {
