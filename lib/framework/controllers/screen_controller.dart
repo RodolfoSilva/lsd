@@ -1,40 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'models/method.dart';
-import 'models/request.dart';
-import 'providers/busy_controller.dart';
-import 'services/api_service.dart';
+import '../models/method.dart';
+import '../models/request.dart';
+import '../services/api_service.dart';
+import 'busy_controller.dart';
 
-enum MethodEnum {
-  get("get"),
-  post("post"),
-  put("put"),
-  delete("delete");
-
-  final String _value;
-  const MethodEnum(this._value);
-
-  static MethodEnum fromString(String method) {
-    switch (method) {
-      case "get":
-        return MethodEnum.get;
-      case "post":
-        return MethodEnum.post;
-      case "put":
-        return MethodEnum.put;
-      case "delete":
-        return MethodEnum.delete;
-      default:
-        return MethodEnum.post;
-    }
-  }
-
-  @override
-  String toString() => _value;
-}
-
-class LsdPageController with ChangeNotifier {
-  LsdPageController({
+class ScreenController with ChangeNotifier {
+  ScreenController({
     required this.path,
     required this.busyController,
     required this.apiService,

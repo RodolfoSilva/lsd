@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
-import '../lsd_page_controller.dart';
-import '../providers/busy_controller.dart';
+import '../controllers/busy_controller.dart';
+import '../controllers/screen_controller.dart';
 import '../services/api_service.dart';
 
 class DynamicWidget extends LsdWidget {
@@ -19,8 +19,8 @@ class DynamicWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider<BusyController, LsdPageController>(
-      create: (context) => LsdPageController(
+    return ChangeNotifierProxyProvider<BusyController, ScreenController>(
+      create: (context) => ScreenController(
         path: path,
         busyController: context.read<BusyController>(),
         apiService: context.read<ApiService>(),
@@ -29,7 +29,7 @@ class DynamicWidget extends LsdWidget {
           pageController!..busyController = busyController,
       builder: (context, child) {
         final lsd = Provider.of<Lsd>(context);
-        final controller = Provider.of<LsdPageController>(context);
+        final controller = Provider.of<ScreenController>(context);
 
         if (controller.isLoading) {
           return lsd.renderLoading(context);

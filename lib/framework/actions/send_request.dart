@@ -1,7 +1,7 @@
 import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
-import '../lsd_page_controller.dart';
+import '../controllers/screen_controller.dart';
 import '../models/request.dart';
 
 class SendRequestAction extends LsdAction {
@@ -22,7 +22,7 @@ class SendRequestAction extends LsdAction {
   @override
   Future<dynamic> perform(GetContext getContext, dynamic params) async {
     Map<String, dynamic>? result = await getContext()
-        .read<LsdPageController>()
+        .read<ScreenController>()
         .sendRequestToServer(request.copyWith(data: params));
 
     if (callback != null) {

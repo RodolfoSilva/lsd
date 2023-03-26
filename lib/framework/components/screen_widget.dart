@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/busy_controller.dart';
+import '../controllers/busy_controller.dart';
 import 'parse_icon.dart';
 
 class Tab {

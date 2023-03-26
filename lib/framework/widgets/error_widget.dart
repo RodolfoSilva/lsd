@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide PageController;
 import 'package:provider/provider.dart';
 
-import '../lsd_page_controller.dart';
+import '../controllers/screen_controller.dart';
 
 class ErrorScreenWidget extends StatelessWidget {
   const ErrorScreenWidget({
@@ -34,7 +34,7 @@ class ErrorScreenWidget extends StatelessWidget {
             ),
             ElevatedButton(
               child: const Text("Tentar novamente"),
-              onPressed: () => context.read<LsdPageController>().refresh(),
+              onPressed: () => context.read<ScreenController>().refresh(),
             ),
           ],
         ),
