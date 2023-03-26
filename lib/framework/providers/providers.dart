@@ -4,7 +4,7 @@ import 'package:lsd_form/lsd_form.dart';
 import 'package:provider/provider.dart';
 
 import '../actions/action_result.dart';
-import '../actions/auth_set_token.dart';
+import '../actions/auth_access_token.dart';
 import '../actions/dialog.dart';
 import '../actions/if.dart';
 import '../actions/load_more_result.dart';
@@ -47,7 +47,7 @@ final lsdProviders = [
       final actionsShelf = LsdActionsShelf()
         ..register("SendRequest", SendRequestAction.new)
         ..register("RefreshPage", RefreshPageAction.new)
-        ..register("AuthSetToken", AuthSetTokenAction.new)
+        ..register("AuthAccessToken", AuthAccessTokenAction.new)
         ..register("LoadMoreResult", LoadMoreActionResult.new)
         ..register("Result", ActionResult.new)
         ..register("If", IfAction.new)

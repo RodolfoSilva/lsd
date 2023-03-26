@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
 
-class AuthSetTokenAction extends LsdAction {
-  AuthSetTokenAction(super.lsd);
+class AuthAccessTokenAction extends LsdAction {
+  AuthAccessTokenAction(super.lsd);
 
   late String? token;
   late LsdAction? callback;

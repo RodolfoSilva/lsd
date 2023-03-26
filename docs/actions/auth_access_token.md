@@ -1,4 +1,4 @@
-# Auth set token
+# Auth access token
 
 With this action you could persist or delete the authenticated user credentials.
 This is very useful when you want to skip the authentication when the user was
@@ -8,7 +8,7 @@ The token will be sended in all request sended to the server on the header `Auth
 
 ```json
 {
-  "action": "AuthSetToken",
+  "action": "AuthAccessToken",
   "props": {
     "token": "The access token",
     "callback": null
@@ -20,7 +20,7 @@ To remove the token, just sent a empty string or a null value.
 
 ```json
 {
-  "action": "AuthSetToken",
+  "action": "AuthAccessToken",
   "props": {
     "token": null,
     "callback": null
