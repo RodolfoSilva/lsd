@@ -34,11 +34,13 @@ import '../services/auth_service.dart';
 import '../storage.dart';
 import '../widgets/error_widget.dart';
 import '../widgets/loading_screen_widget.dart';
+import 'busy_controller.dart';
 
 final lsdProviders = [
   Provider<Storage>(
     create: (context) => const SecureStorage(FlutterSecureStorage()),
   ),
+  ChangeNotifierProvider<BusyController>(create: (context) => BusyController()),
   ProxyProvider<Storage, AuthService>(
     update: (context, storage, previous) => AuthService(storage),
   ),

@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
-import 'package:lsd_form/lsd_form.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/busy_controller.dart';
 
 class ButtonWidget extends LsdWidget {
   late final LsdWidget child;
   late final LsdAction? onPress;
-  late String variant;
+  late final String variant;
+  late final String loadingFor;
 
   ButtonWidget(super.lsd);
 
   @override
   LsdWidget fromJson(Map<String, dynamic> props) {
     final variant = props["variant"] as String? ?? "button";
+    loadingFor = props["loading_for"] as String? ?? "submitting";
 
     this.variant = variant.toLowerCase();
 
@@ -23,33 +27,20 @@ class ButtonWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formData =
-        context.dependOnInheritedWidgetOfExactType<LsdFormProvider>();
-
-    if (formData != null) {
-      return ValueListenableBuilder<bool>(
-        valueListenable: LsdFormProvider.of(context).submitting,
-        child: child.toWidget(context),
-        builder: (context, submitting, child) => internalBuild(
-          context,
-          submitting: submitting,
-          child: child!,
-        ),
-      );
-    }
-
+    final busyController = getContext().watch<BusyController>();
     return internalBuild(
       context,
+      busy: busyController.isBusy(loadingFor),
       child: child.toWidget(context),
     );
   }
 
   Widget internalBuild(
     BuildContext context, {
-    bool submitting = false,
+    bool busy = false,
     required Widget child,
   }) {
-    final finalChild = submitting
+    final finalChild = busy
         ? const SizedBox(
             height: 15,
             width: 15,
@@ -57,7 +48,7 @@ class ButtonWidget extends LsdWidget {
         : child;
 
     final onPress =
-        submitting ? () => null : () => this.onPress?.perform(getContext, null);
+        busy ? () => null : () => this.onPress?.perform(getContext, null);
 
     if (variant == "text") {
       return TextButton(

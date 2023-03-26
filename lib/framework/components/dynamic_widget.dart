@@ -3,6 +3,7 @@ import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
 import '../lsd_page_controller.dart';
+import '../providers/busy_controller.dart';
 import '../services/api_service.dart';
 
 class DynamicWidget extends LsdWidget {
@@ -18,12 +19,14 @@ class DynamicWidget extends LsdWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider0<LsdPageController>(
+    return ChangeNotifierProxyProvider<BusyController, LsdPageController>(
       create: (context) => LsdPageController(
         path: path,
+        busyController: context.read<BusyController>(),
         apiService: context.read<ApiService>(),
       ),
-      update: (context, pageController) => pageController!,
+      update: (context, busyController, pageController) =>
+          pageController!..busyController = busyController,
       builder: (context, child) {
         final lsd = Provider.of<Lsd>(context);
         final controller = Provider.of<LsdPageController>(context);

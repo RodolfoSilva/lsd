@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lsd/lsd.dart';
 import 'package:provider/provider.dart';
 
-import '../lsd_page_controller.dart';
+import '../providers/busy_controller.dart';
 import 'parse_icon.dart';
 
 class Tab {
@@ -138,7 +138,7 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
           )
         : null;
 
-    final controller = context.watch<LsdPageController>();
+    final busyController = context.watch<BusyController>();
 
     return Stack(
       children: [
@@ -167,7 +167,7 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
                   },
                 ),
         ),
-        if (controller.isBusy)
+        if (busyController.isBusy('*'))
           const Opacity(
             opacity: 0.3,
             child: ModalBarrier(
@@ -175,7 +175,8 @@ class _ScreenWidgetState extends State<_ScreenWidget> {
               color: Colors.black,
             ),
           ),
-        if (controller.isBusy) const Center(child: CircularProgressIndicator()),
+        if (busyController.isBusy('*'))
+          const Center(child: CircularProgressIndicator()),
       ],
     );
   }

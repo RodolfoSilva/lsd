@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'models/method.dart';
 import 'models/request.dart';
+import 'providers/busy_controller.dart';
 import 'services/api_service.dart';
 
 enum MethodEnum {
@@ -33,19 +34,22 @@ enum MethodEnum {
 }
 
 class LsdPageController with ChangeNotifier {
-  LsdPageController({required this.path, required this.apiService}) {
+  LsdPageController({
+    required this.path,
+    required this.busyController,
+    required this.apiService,
+  }) {
     _fetchPath();
   }
 
   final String path;
   final ApiService apiService;
+  BusyController busyController;
   Map<String, dynamic>? _body;
   bool _loading = false;
-  bool _busy = false;
   Object? _error;
   StackTrace? _stackTrace;
   bool get isLoading => _loading;
-  bool get isBusy => _busy;
   bool get hasError => _error != null;
   Object? get error => _error;
   StackTrace? get stackTrace => _stackTrace;
@@ -53,11 +57,6 @@ class LsdPageController with ChangeNotifier {
 
   _setLoading(bool loading) {
     _loading = loading;
-    notifyListeners();
-  }
-
-  setBusy(bool busy) {
-    _busy = busy;
     notifyListeners();
   }
 
@@ -91,7 +90,7 @@ class LsdPageController with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>?> sendRequestToServer(Request request) async {
-    setBusy(true);
+    busyController.setBusy(request.id, true);
     try {
       switch (request.method) {
         case Method.get:
@@ -122,7 +121,7 @@ class LsdPageController with ChangeNotifier {
           );
       }
     } finally {
-      setBusy(false);
+      busyController.setBusy(request.id, false);
     }
   }
 }
