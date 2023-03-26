@@ -3,7 +3,6 @@ import 'package:lsd/lsd.dart';
 import 'package:lsd_form/lsd_form.dart';
 import 'package:provider/provider.dart';
 
-import '../actions/action_result.dart';
 import '../actions/auth_access_token.dart';
 import '../actions/dialog.dart';
 import '../actions/if.dart';
@@ -49,12 +48,11 @@ final lsdProviders = [
         ..register("RefreshPage", RefreshPageAction.new)
         ..register("AuthAccessToken", AuthAccessTokenAction.new)
         ..register("LoadMoreResult", LoadMoreActionResult.new)
-        ..register("Result", ActionResult.new)
-        ..register("If", IfAction.new)
         ..register("Navigate", NavigateAction.new)
         ..register("ShowDialog", ShowDialogAction.new)
         ..register("RequiredValidation", RequiredValidationAction.new)
-        ..register("SubmitForm", LsdSubmitFormAction.new);
+        ..register("SubmitForm", LsdSubmitFormAction.new)
+        ..register("If", IfAction.new);
 
       final widgetsShelf = LsdWidgetsShelf()
         ..register("Dynamic", DynamicWidget.new)
