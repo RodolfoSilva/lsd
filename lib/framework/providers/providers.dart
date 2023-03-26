@@ -9,10 +9,10 @@ import 'package:provider/provider.dart';
 import '../actions/auth_access_token.dart';
 import '../actions/dialog.dart';
 import '../actions/if.dart';
-import '../actions/load_more_result.dart';
 import '../actions/navigate.dart';
 import '../actions/refresh_page.dart';
 import '../actions/required_validation.dart';
+import '../actions/result.dart';
 import '../actions/send_request.dart';
 import '../components/button_widget.dart';
 import '../components/card_widget.dart';
@@ -62,7 +62,7 @@ final lsdProviders = [
         ..register("SendRequest", SendRequestAction.new)
         ..register("RefreshPage", RefreshPageAction.new)
         ..register("AuthAccessToken", AuthAccessTokenAction.new)
-        ..register("LoadMoreResult", LoadMoreActionResult.new)
+        ..register("Result", ResultAction.new)
         ..register("Navigate", NavigateAction.new)
         ..register("ShowDialog", ShowDialogAction.new)
         ..register("RequiredValidation", RequiredValidationAction.new)

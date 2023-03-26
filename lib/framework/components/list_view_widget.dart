@@ -85,12 +85,16 @@ class _ListViewWidgetState extends State<_ListViewWidget> {
       }
 
       if (result.containsKey("on_load_more")) {
-        _onLoadMore = result["on_load_more"];
+        _onLoadMore = widget.lsd.parseActionOrNull(result["on_load_more"]);
       }
 
       if (result.containsKey("items")) {
         setState(() {
-          final items = List<LsdWidget>.from(result["items"]);
+          final items = List<Map<String, dynamic>>.from(result["items"])
+              .map((e) => widget.lsd.parseWidgetOrNull(e))
+              .whereType<LsdWidget>()
+              .toList();
+
           widgets.addAll(items);
         });
       }
